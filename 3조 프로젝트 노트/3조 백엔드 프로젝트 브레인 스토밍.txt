@@ -1,0 +1,71 @@
+luen2
+luen8861
+luen2@shirons.com
+
+주말 과제 : projectEx에 DB연동하기
+book_project에 로그인/회원가입 기능 추가하기
+
+주제 및 프로젝트 기획안 작성 10/18(수)까지
+
+본격적으로 프로젝스 수행.
+코딩, 구현, 테스트, PPT 작성 10/26(목)까지
+10/26(목) 1시에 발표
+
+1. 소통 창구 수립
+
+3 팀명: 시커머스
+
+4. 주제 선정
+
+만약 크롤링이 필요하다면 무엇을 가져올 것인가?
+
+후보 1: 쇼핑몰. 상품 정보 DB에 저장. 검색. 
+후보 2: 호텔, 모텔 등 여행 정보                   -
+후보 3: 과외 매칭 학원			 
+후보 4: 티켓 예매 사이트                                - -
+후보 5: 스포티파이 API 노래 검색                    - - -
+
+
+현재 할 수 있는 것 (능력이 되는 것):
+DB에 저장된 정보를 검색조건에 맞춰 보여주는 것은 할 수 있다.
+
+로그인/회원가입 유효성을 검사하여 DB에 사용자 정보를 추가할 수 있다.
+
+사용할 기술 및 프로그램(?)
+Django, MySQL
+
+
+
+
+Spotify API가 할 수 있는 것
+
+1. 검색 기능
+
+
+연도별 노래 검색
+가수명, 곡명, 곡id, 곡 인기도, 아티스트ID, 아티스트 인기도, 장르, 팔로워 수
+
+ID : d95055726cab4d388a7eca1c84f4d7f9
+SECRET: 0a29bcc039974031a517576cb8c9ad53
+
+
+audio_feature()활용하여 '선호음악'에 앨범 띄우기
+
+
+
+회원가입 폼 : 선호 장르 목록
+
+POP
+R&B
+Rock
+hip hop
+jazz
+latin
+Acoustic
+Classcial
+
+album_id : album_result['items'][0]['id']
+album_name : album_result['items'][0]['name']
+album_artist : album_result['items'][0]['artists'][0]['name']
+album_image : album_result['items'][0]['images']
+album_release_date : album_result['items'][0]['release_date']

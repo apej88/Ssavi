@@ -1,0 +1,19 @@
+<!-- 초기 화면입니다. 기본적으로 최신 앨범들이 나열되어있습니다. -->
+{% extends 'base.html' %}
+{% block content %}
+<nav id="index_nav">
+    <a href="#">추천음악</a>
+    <a href="#">최신음악</a>
+    {% if user.is_authenticated %}
+    <a href="#">선호음악</a>
+    {% endif %}
+</nav>
+<div id="indexBox">
+    <article>
+        <div id="album_box">
+            <p>테스트용 출력</p>
+            <a href="{% url 'detail' %}">상세보기</a>
+        </div>
+    </article>
+</div>
+{% endblock content %}

@@ -1,0 +1,13 @@
+<!-- 상세페이지입니다 -->
+{% block content %}
+<nav id="index_nav">
+    <a href="#">추천음악</a>
+    <a href="#">최신음악</a>
+    {% if user.is_authenticated %}
+    <a href="#">선호음악</a>
+    {% endif %}
+</nav>
+<div id="detailBox">
+    <div></div>
+</div>
+{% endblock content %}
