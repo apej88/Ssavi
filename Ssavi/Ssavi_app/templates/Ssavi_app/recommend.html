@@ -1,14 +1,52 @@
 <!-- 추천페이지입니다 -->
+{% extends 'base.html' %}
+{% load static %}
 {% block content %}
-<nav id="index_nav">
-    <a href="#">추천음악</a>
-    <a href="#">최신음악</a>
-    {% if user.is_authenticated %}
+<nav class="menu">
+    <a href="{% url 'recommend' %}">추천음악</a>
+    <a href="{% url 'index' %}">최신음악</a>
     <a href="#">선호음악</a>
-    {% endif %}
 </nav>
 <div id="indexBox">
-    {% include "index_nav.html" %}
-    <article></article>
+    <article>
+        <div id="recommend">
+            <table id="album_result">
+                <tr>
+                    <td>
+                        <a href=""><img src="{% static '/image/post1.jpg' %}" alt=""></a>
+                    </td>
+                    <td>
+                        <a href=""><img src="{% static '/image/post1.jpg' %}" alt=""></a>
+                    </td>
+                    <td>
+                        <a href=""><img src="{% static '/image/post1.jpg' %}" alt=""></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href=""><img src="{% static '/image/post1.jpg' %}" alt=""></a>
+                    </td>
+                    <td>
+                        <a href=""><img src="{% static '/image/post1.jpg' %}" alt=""></a>
+                    </td>
+                    <td>
+                        <a href=""><img src="{% static '/image/post1.jpg' %}" alt=""></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href=""><img src="{% static '/image/post1.jpg' %}" alt=""></a>
+                    </td>
+                    <td>
+                        <a href=""><img src="{% static '/image/post1.jpg' %}" alt=""></a>
+                    </td>
+                    <td>
+                        <a href=""><img src="{% static '/image/post1.jpg' %}" alt=""></a>
+                    </td>
+                </tr>
+                <tr><th>추천음악</th></tr>
+            </table>
+        </div>
+    </article>
 </div>
 {% endblock content %}

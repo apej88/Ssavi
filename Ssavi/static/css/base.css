@@ -1,0 +1,20 @@
+#headerBox {
+    background-color: #3897f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+#footerBox{
+    background-color: #f0f0f0;
+    text-align: center;
+    padding: 12px 0;
+}

@@ -6,3 +6,9 @@ def index(request):
 
 def detail(request):
     return render(request, 'Ssavi_app/detail.html')
+
+def recommend(request):
+    return render(request, 'Ssavi_app/recommend.html')
+
+def album_detail(request, album_id):
+    pass
