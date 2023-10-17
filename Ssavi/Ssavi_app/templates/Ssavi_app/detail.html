@@ -4,11 +4,38 @@
 <nav class="menu">
     <a href="{% url 'recommend' %}">추천음악</a>
     <a href="{% url 'index' %}">최신음악</a>
-    {% if user.is_authenticated %}
     <a href="#">선호음악</a>
-    {% endif %}
 </nav>
 <div id="detailBox">
-    <div></div>
+    <div>
+        {% comment %} 앨범 정보 {% endcomment %}
+        {% if album %}
+            <table>
+            <tr>
+                <td>노래제목</td>
+                <td>가수명</td>
+                <td>미리듣기</td>
+            </tr>
+                {% for song in album %}
+                    <tr>
+                        <td>{{album['song_name']}}</td>
+                        <td>{{album.song_artist}}</td>
+                        <td><audio src={{album.song_preview}} preload="auto" controls loop></audio></td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+    </div>
+    <div>
+        {% comment %} 수록곡 {% endcomment %}
+    </div>
 </div>
 {% endblock content %}
+
+
+{% comment %} 좋아요를 누르면 곡 정보가 DB에 저장이 되도록 한다 {% endcomment %}
+{% comment %} 좋아요를 취소하면 곡 정보가 DB에서 삭제되도록 한다 {% endcomment %}
+{% comment %} <form method="post">
+    {% csrf_token %}
+    <button id="form_btn" type="submit">좋아요</button>
+</form> {% endcomment %}
