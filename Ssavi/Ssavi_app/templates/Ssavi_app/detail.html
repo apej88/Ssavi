@@ -1,5 +1,6 @@
 <!-- 상세페이지입니다 -->
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
 <nav class="menu">
     <a href="{% url 'recommend' %}">추천음악</a>
@@ -7,33 +8,62 @@
     <a href="#">선호음악</a>
 </nav>
 <div id="detailBox">
-    <hr>
     <div>
         {% comment %} 앨범 정보 {% endcomment %}
         <table id='album_detail'>
             <tr>
-                <td><img src="{{ album.album_image }}"></td>
-                <td>
+                <td class="image-cell">
+                    {% comment %} 앨범 이미지 {% endcomment %}
+                    <img src="{{ album.album_image }}">
+                </td>
+                <td class="description-cell"> 
+                {% comment %} 앨범 설명 {% endcomment %}
                     <p><strong>앨범명:</strong> {{ album.album_name }}</p>
                     <p><strong>아티스트명:</strong> {{ album.album_artist }}</p>
-                    <p><strong>장르:</strong> {{ album.album_genre }}</p>
+                    <p><strong>장르:</strong>{{ album.album_genre }}</p>
+                    <p><strong>테스트:</strong>
+                        {% for genre in album.album_genre %}
+                            {{genre}}
+                        {% endfor %}
+                    </p>
                     <p><strong>발매일:</strong> {{ album.album_release_date }}</p>
                 </td>
             </tr>
         </table>
     </div>
-    <hr>
     <div>
         {% comment %} 수록곡 {% endcomment %}
-        <table id="album_songs">
-            <tr>
-                <th>번호</th>
-                <th>곡명</th>
-                <th>플레이리스트</th>
-                <th>미리듣기</th>
-                <th>분석</th>
-            </tr>
-        </table>
+        {% if songs_data %}
+            <table id="album_songs">
+                <tr>
+                    <th>번호</th>
+                    <th>곡명</th>
+                    <th>아티스트</th>
+                    <th>미리듣기</th>
+                    <th>플레이리스트 추가</th>
+                    <th>분석</th>
+                </tr>
+                {% for song in songs_data %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ song.song_name }}</td>
+                        <td>{{ song.song_artist }}</td>
+                        <td>
+                            {% if song.song_preview_url %}
+                                <audio controls>
+                                    <source src="{{ song.song_preview_url }}" type="audio/mpeg">
+                                    브라우저가 오디오를 지원하지 않습니다.
+                                </audio>
+                            {% else %}
+                                미리듣기 없음
+                            {% endif %}
+                        </td> {# 미리듣기 표시 #}
+                        <td><a href="#"><button><img src="{% static 'image/add_playlist.png' %}"></button></a></td> {# 플레이리스트 추가 버튼 #}
+                        <td><a href="{% url 'analysis' song.song_id %}"><button class='audio_feature_btn' data-songid="{{song.song_id}}"><img src="{% static 'image/analysis.png' %}"></button></a></td> {# 분석 버튼 #}
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
     </div>
 </div>
 {% endblock content %}

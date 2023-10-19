@@ -1,0 +1,16 @@
+<!-- audio feature 분석페이지 입니다 -->
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<nav class="menu">
+    <a href="{% url 'recommend' %}">추천음악</a>
+    <a href="{% url 'index' %}">최신음악</a>
+    <a href="#">선호음악</a>
+</nav>
+<div id="analysis">
+    <h3>곡 분석</h3>
+    {% comment %} <p>이미지 {{image}}</p> {% endcomment %}
+    {% comment %} <p>이미지 데이터 {{image_data}}</p> {% endcomment %}
+    <img src="data:image/png;base64,{{ image }}">
+</div>
+{% endblock content %}
