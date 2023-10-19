@@ -7,35 +7,33 @@
     <a href="#">선호음악</a>
 </nav>
 <div id="detailBox">
+    <hr>
     <div>
         {% comment %} 앨범 정보 {% endcomment %}
-        {% if album %}
-            <table>
+        <table id='album_detail'>
             <tr>
-                <td>노래제목</td>
-                <td>가수명</td>
-                <td>미리듣기</td>
+                <td><img src="{{ album.album_image }}"></td>
+                <td>
+                    <p><strong>앨범명:</strong> {{ album.album_name }}</p>
+                    <p><strong>아티스트명:</strong> {{ album.album_artist }}</p>
+                    <p><strong>장르:</strong> {{ album.album_genre }}</p>
+                    <p><strong>발매일:</strong> {{ album.album_release_date }}</p>
+                </td>
             </tr>
-                {% for song in album %}
-                    <tr>
-                        <td>{{album['song_name']}}</td>
-                        <td>{{album.song_artist}}</td>
-                        <td><audio src={{album.song_preview}} preload="auto" controls loop></audio></td>
-                    </tr>
-                {% endfor %}
-            </table>
-        {% endif %}
+        </table>
     </div>
+    <hr>
     <div>
         {% comment %} 수록곡 {% endcomment %}
+        <table id="album_songs">
+            <tr>
+                <th>번호</th>
+                <th>곡명</th>
+                <th>플레이리스트</th>
+                <th>미리듣기</th>
+                <th>분석</th>
+            </tr>
+        </table>
     </div>
 </div>
 {% endblock content %}
-
-
-{% comment %} 좋아요를 누르면 곡 정보가 DB에 저장이 되도록 한다 {% endcomment %}
-{% comment %} 좋아요를 취소하면 곡 정보가 DB에서 삭제되도록 한다 {% endcomment %}
-{% comment %} <form method="post">
-    {% csrf_token %}
-    <button id="form_btn" type="submit">좋아요</button>
-</form> {% endcomment %}
