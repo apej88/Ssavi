@@ -20,10 +20,9 @@
                 {% comment %} 앨범 설명 {% endcomment %}
                     <p><strong>앨범명:</strong> {{ album.album_name }}</p>
                     <p><strong>아티스트명:</strong> {{ album.album_artist }}</p>
-                    <p><strong>장르:</strong>{{ album.album_genre }}</p>
-                    <p><strong>테스트:</strong>
-                        {% for genre in album.album_genre %}
-                            {{genre}}
+                    <p><strong>장르:</strong>
+                        {% for genre in genres %}
+                            {{ genre }}
                         {% endfor %}
                     </p>
                     <p><strong>발매일:</strong> {{ album.album_release_date }}</p>
