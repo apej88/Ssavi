@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
-from .models import Albums, AudioFeatures, Kpop, Jpop
+from .models import Albums, AudioFeatures, Kpop, Jpop, Jazz, Latin, Alternative, Hiphop, Rnb, Rock, Indiepop
 
 client_credentials_manager = SpotifyClientCredentials(client_id='c0ef6b3167de4affb312e7fc7366abb4', client_secret='86babd771d3c4098b90fc70ed221cd60')
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
@@ -44,7 +44,6 @@ matplotlib.use('Agg')  # Matplotlib이 인터페이스를 생성하지 않도록
 import matplotlib.pyplot as plt
 import io
 import base64
-import numpy as np
 
 def analysis(request, song_id):
     # 곡의 audio feature 불러오기
@@ -53,6 +52,7 @@ def analysis(request, song_id):
     
     # song_id를 가지고 장르 뽑기
     track_info = sp.track(song_id)
+    song_name = track_info['name']
     artist_id = track_info["artists"][0]["id"]
     artists_info = sp.artist(artist_id)
     genre = artists_info["genres"][0]
@@ -62,6 +62,8 @@ def analysis(request, song_id):
         genre_audio_feature_all = Kpop.objects.all()
     elif genre=='pop':
         genre_audio_feature_all = Jpop.objects.all()
+    elif genre=='rock':
+        genre_audio_feature_all = Rock.objects.all()
     else:
         print("오류")
 
@@ -99,7 +101,6 @@ def analysis(request, song_id):
     # 그래프 그리기
     genre_r_values = [genre_audio_feature_data[col] for col in feat_cols]
     r_values = [audio_feature_data[col] for col in feat_cols]
-    
 
     # 그래프를 생성하고 데이터 표시
     fig = plt.figure(figsize=(6, 6))
@@ -107,14 +108,15 @@ def analysis(request, song_id):
 
     # 내가 선택한 곡 그래프 추가
     # 그래프 영역 채우기 ('b' : 파란색)
-    ax.fill(feat_cols + feat_cols[:1], r_values + r_values[:1], 'blue', alpha=0.1, label='current song audio feature')
+    ax.fill(feat_cols + feat_cols[:1], r_values + r_values[:1], 'blue', alpha=0.1, label=song_name)
     
     # 장르 평균값 그래프 추가
-    ax.fill(feat_cols + feat_cols[:1], genre_r_values + genre_r_values[:1], 'r', alpha=0.1, label='genre average audio feature')
+    ax.fill(feat_cols + feat_cols[:1], genre_r_values + genre_r_values[:1], 'r', alpha=0.1, label=(genre+' 100'))
 
     # 기존 그래프 설정 (축 레이블 등)
     ax.set_xticks(range(len(feat_cols)))
     ax.set_xticklabels(feat_cols)
+
     # 범례 표시 (위치 조정 가능)
     ax.legend(loc='upper right', bbox_to_anchor=(1, 1.1))
 
@@ -124,35 +126,66 @@ def analysis(request, song_id):
     buffer.seek(0)
 
     # 이미지 데이터를 Base64로 인코딩하여 클라이언트에게 반환
-    image_data1 = base64.b64encode(buffer.read()).decode('utf-8')
+    image_data = base64.b64encode(buffer.read()).decode('utf-8')
 
-    audio_feature_data = {
-        "acousticness": audio_feature.acousticness+1,
-        "danceability": audio_feature.danceability+1,
-        "energy": audio_feature.energy+1,
-        "loudness": 10**(audio_feature.loudness/10)+1,
-        "speechiness": audio_feature.speechiness+1,
-        "tempo": audio_feature.tempo/100+1,
-        "valence": audio_feature.valence+1
-    }
+    ##############################################################################################################
+    # 같은 장르의 다른 곡들 추천
+    recommendations = sp.recommendations(seed_tracks=[song_id], limit=7)
 
-    r_values = [audio_feature_data[col] for col in feat_cols]
+    # 추천 곡과 곡 제목, 가수, 그래프 이미지 저장
+    recommendation_tracks = []
+    recommendation_track_names = []
+    recommendation_track_artists = []
+    recommendations_images = []
 
-    # 그래프를 생성하고 데이터 표시
-    fig = plt.figure(figsize=(6, 6))
-    ax = fig.add_subplot(111, projection='polar')
-    ax.fill(feat_cols + feat_cols[:1], r_values + r_values[:1], 'b', alpha=0.1)
-    ax.set_xticks(range(len(feat_cols)))
-    ax.set_xticklabels(feat_cols)
-
-    # 그래프를 이미지로 저장
-    buffer = io.BytesIO()
-    plt.savefig(buffer, format='png')
-    buffer.seek(0)
+    for track in recommendations['tracks']:
+        if track['id'] != song_id and track['id'] not in recommendation_tracks and track['name'] not in recommendation_track_names:
+            recommendation_tracks.append(track['id'])
+            recommendation_track_names.append(track['name'])
+            artists = [artist['name'] for artist in track['artists']]
+            recommendation_track_artists.append(artists)
     
-    # 이미지 데이터를 Base64로 인코딩하여 클라이언트에게 반환
-    image_data2 = base64.b64encode(buffer.read()).decode('utf-8')
-    return render(request, 'Ssavi_app/analysis.html', {'image1': image_data1, 'image2' : image_data2})
+    for i in range(0, 5):
+        audio_features = sp.audio_features(recommendation_tracks[i])
+
+        audio_feature_data = {
+            "acousticness": audio_features[0]['acousticness'],
+            "danceability": audio_features[0]['danceability'],
+            "energy": audio_features[0]['energy'],
+            "loudness": 10**(audio_features[0]['loudness']/10),
+            "speechiness": audio_features[0]['speechiness'],
+            "tempo": audio_features[0]['tempo']/100,
+            "valence": audio_features[0]['valence']
+        }
+
+        r_values = [audio_feature_data[col] for col in feat_cols]
+
+        # 그래프를 생성하고 데이터 표시
+        fig = plt.figure(figsize=(6, 6))
+        ax = fig.add_subplot(111, projection='polar')
+
+        # 라벨의 값 변경 후 그래프 그리기
+        artist_str = ', '.join(recommendation_track_artists[i])
+        labels = recommendation_track_names[i] + ' - ' + artist_str
+        ax.fill(feat_cols + feat_cols[:1], r_values + r_values[:1], 'b', alpha=0.1, label=labels)
+        
+        # 기존 그래프 설정 (축 레이블 등)
+        ax.set_xticks(range(len(feat_cols)))
+        ax.set_xticklabels(feat_cols)
+
+        # 범례 표시 (위치 조정 가능)
+        ax.legend(loc='upper right', bbox_to_anchor=(1, 1.1))
+
+        # 그래프를 이미지로 저장
+        buffer = io.BytesIO()
+        plt.savefig(buffer, format='png')
+        buffer.seek(0)
+        
+        # 이미지 데이터를 Base64로 인코딩하여 클라이언트에게 반환
+        image_data1 = base64.b64encode(buffer.read()).decode('utf-8')
+        recommendations_images.append(image_data1)
+
+    return render(request, 'Ssavi_app/analysis.html', {'image': image_data, 'recommendation_images' : recommendations_images})
 
 
 def recommend(request):
