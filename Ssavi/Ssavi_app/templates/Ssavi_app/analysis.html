@@ -3,19 +3,60 @@
 {% load static %}
 {% block content %}
 <nav class="menu">
-    <a href="{% url 'recommend' %}">추천음악</a>
-    <a href="{% url 'index' %}">최신음악</a>
-    <a href="#">선호음악</a>
+    <a href="{% url 'recommend' %}">장르별 음악</a>
+    <a href="{% url 'index' %}">최신 음악</a>
+    <a href="#">음악 추천 받기</a>
 </nav>
 <div id="analysis">
-    <div id="analysisbox1">
+    <div class="current-track">
+        <h1>현재 곡 정보</h1>
+        <img src="data:image/png;base64,{{ image }}">
+        <p>곡명: {{ current_song.0 }}</p>
+        <p>가수: {{ current_song.1 }}</p>
         
     </div>
-    <h3>곡 분석</h3>
-    <p>이미지{{image}}</p>
-    <p>이미지{{recommendations_images}}</p>
-    <h2>이미지<img src="data:image/png;base64,{{ image }}"></h2>
-    {% for recommendation_image in recommendation_images %}
-        <img src="data:image/png;base64,{{ recommendation_image }}">
-    {% endfor %}
+    <div class="recommendations">
+        <h1>추천 곡 목록</h1>
+        <div class="recommendation">
+            <img src="data:image/png;base64,{{ recommendation_images.0 }}">
+            <div class="recommendation-info">
+                <p>곡명: {{ recommendation_track.0 }}</p>
+                <p>가수: {{ recommendations_artist.0 }}</p>
+                <button class='analysis_btn'>b</button>
+            </div>
+        </div>
+        <div class="recommendation">
+            <img src="data:image/png;base64,{{ recommendation_images.1 }}">
+            <div class="recommendation-info">
+                <p>곡명: {{ recommendation_track.1 }}</p>
+                <p>가수: {{ recommendations_artist.1 }}</p>
+                <button class='analysis_btn'>b</button>
+            </div>
+        </div>
+        <div class="recommendation">
+            <img src="data:image/png;base64,{{ recommendation_images.2 }}">
+            <div class="recommendation-info">
+                <p>곡명: {{ recommendation_track.2 }}</p>
+                <p>가수: {{ recommendations_artist.2 }}</p>
+                <button class='analysis_btn'>b</button>
+            </div>
+        </div>
+        <div class="recommendation">
+            <img src="data:image/png;base64,{{ recommendation_images.3 }}">
+            <div class="recommendation-info">
+                <p>곡명: {{ recommendation_track.3 }}</p>
+                <p>가수: {{ recommendations_artist.3 }}</p>
+                <button class='analysis_btn'>b</button>
+            </div>
+        </div>
+        <div class="recommendation">
+            <img src="data:image/png;base64,{{ recommendation_images.4 }}">
+            <div class="recommendation-info">
+                <p>곡명: {{ recommendation_track.4 }}</p>
+                <p>가수: {{ recommendations_artist.5 }}</p>
+                <button class='analysis_btn'>b</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content %}

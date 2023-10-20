@@ -3,9 +3,9 @@
 {% load static %}
 {% block content %}
 <nav class="menu">
-    <a href="{% url 'recommend' %}">추천음악</a>
-    <a href="{% url 'index' %}">최신음악</a>
-    <a href="#">선호음악</a>
+    <a href="{% url 'recommend' %}">장르별 음악</a>
+    <a href="{% url 'index' %}">최신 음악</a>
+    <a href="#">음악 추천 받기</a>
 </nav>
 <div id="indexBox">
     <article>
@@ -16,7 +16,7 @@
                         <a href="{% url 'detail' '01dPJcwyht77brL4JQiR8R' %}"><img src="{% static '/image/post1.jpg' %}" alt=""></a>
                     </td>
                     <td>
-                        <a href=""><img src="{% static '/image/post1.jpg' %}" alt=""></a>
+                        <a href="{% url 'detail' '5V8n6fqyAPxvFTibPhQVcp' %}"><img src="{% static '/image/post1.jpg' %}" alt=""></a>
                     </td>
                     <td>
                         <a href=""><img src="{% static '/image/post1.jpg' %}" alt=""></a>

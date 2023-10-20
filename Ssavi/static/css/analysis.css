@@ -1,0 +1,97 @@
+#analysis {
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid black;
+    margin-top: 10px;
+}
+
+.current-track {
+    width: 50%;
+    margin: 0 auto;
+    text-align: center;
+    border: 1px solid black;
+}
+
+.current-track h1 {
+    font-size: 36px;
+    position: relative;
+    border-bottom: 1px solid black;
+    width: 1000px;
+    margin: 0 auto;
+    margin-top: 20px;
+}
+
+.current-track h1::after {
+    content: '';
+    display: block;
+    height: 20px;
+}
+
+.current-track img {
+    width: 750px;
+    height: 750px;
+}
+
+.current-track p {
+    font-size: 40px;
+    margin: 0;
+}
+
+.recommendations {
+    width: 50%;
+    text-align: center;
+    margin: 0 auto;
+    border: 1px solid black;
+}
+
+.recommendations h1 {
+    font-size: 36px;
+    position: relative;
+    border-bottom: 1px solid black;
+    width: 1000px;
+    margin: 0 auto;
+    margin-top: 20px;
+}
+
+.recommendations h1::after {
+    content: '';
+    display: block;
+    height: 20px;
+}
+
+.recommendation {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.recommendation img {
+    max-width: 500px;
+    margin-left: 100px;
+}
+
+/* 곡 정보 스타일 */
+.recommendation-info {
+    flex: 1;
+}
+
+.recommendation-info p {
+    font-size: 25px;
+    margin: 0;
+}
+
+.analysis_btn {
+    margin-top: 10px;
+    width: 40px;
+    height: 40px;
+}
+
+@media (max-width: 1550px) {
+    #analysis {
+        flex-direction: column; /* 화면 너비가 작을 때 세로로 정렬 */
+    }
+
+    .current-track, .recommendations {
+        width: 100%;
+    }
+}

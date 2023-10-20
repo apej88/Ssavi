@@ -55,7 +55,10 @@ def analysis(request, song_id):
     song_name = track_info['name']
     artist_id = track_info["artists"][0]["id"]
     artists_info = sp.artist(artist_id)
+    artist_name = artists_info['name']
     genre = artists_info["genres"][0]
+    
+    current_song = [song_name, artist_name]
     
     # 각 장르마다 평균 audio feature를 구하기 위해 모델 오브젝트 불러옴
     if genre=='k-pop':
@@ -64,6 +67,18 @@ def analysis(request, song_id):
         genre_audio_feature_all = Jpop.objects.all()
     elif genre=='rock':
         genre_audio_feature_all = Rock.objects.all()
+    elif genre=='r&b':
+        genre_audio_feature_all = Rnb.objects.all()
+    elif genre=='jazz':
+        genre_audio_feature_all = Jazz.objects.all()
+    elif genre=='latin':
+        genre_audio_feature_all = Latin.objects.all()
+    elif genre=='hip hop':
+        genre_audio_feature_all = Hiphop.objects.all()
+    elif genre=='indie pop':
+        genre_audio_feature_all = Indiepop.objects.all()
+    elif genre=='alternative':
+        genre_audio_feature_all = Alternative.objects.all()
     else:
         print("오류")
 
@@ -127,7 +142,8 @@ def analysis(request, song_id):
 
     # 이미지 데이터를 Base64로 인코딩하여 클라이언트에게 반환
     image_data = base64.b64encode(buffer.read()).decode('utf-8')
-
+    
+    plt.close(fig)
     ##############################################################################################################
     # 같은 장르의 다른 곡들 추천
     recommendations = sp.recommendations(seed_tracks=[song_id], limit=7)
@@ -143,7 +159,8 @@ def analysis(request, song_id):
             recommendation_tracks.append(track['id'])
             recommendation_track_names.append(track['name'])
             artists = [artist['name'] for artist in track['artists']]
-            recommendation_track_artists.append(artists)
+            artists_str = ', '.join(artists)
+            recommendation_track_artists.append(artists_str)
     
     for i in range(0, 5):
         audio_features = sp.audio_features(recommendation_tracks[i])
@@ -165,8 +182,7 @@ def analysis(request, song_id):
         ax = fig.add_subplot(111, projection='polar')
 
         # 라벨의 값 변경 후 그래프 그리기
-        artist_str = ', '.join(recommendation_track_artists[i])
-        labels = recommendation_track_names[i] + ' - ' + artist_str
+        labels = recommendation_track_names[i] + ' - ' + recommendation_track_artists[i]
         ax.fill(feat_cols + feat_cols[:1], r_values + r_values[:1], 'b', alpha=0.1, label=labels)
         
         # 기존 그래프 설정 (축 레이블 등)
@@ -184,8 +200,9 @@ def analysis(request, song_id):
         # 이미지 데이터를 Base64로 인코딩하여 클라이언트에게 반환
         image_data1 = base64.b64encode(buffer.read()).decode('utf-8')
         recommendations_images.append(image_data1)
+        plt.close(fig)
 
-    return render(request, 'Ssavi_app/analysis.html', {'image': image_data, 'recommendation_images' : recommendations_images})
+    return render(request, 'Ssavi_app/analysis.html', {'image': image_data, 'recommendation_images' : recommendations_images, 'current_song' : current_song, 'recommendation_track' : recommendation_track_names, 'recommendations_artist' : recommendation_track_artists})
 
 
 def recommend(request):
