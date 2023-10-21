@@ -7,6 +7,7 @@
     <a href="{% url 'index' %}">최신 음악</a>
     <a href="#">음악 추천 받기</a>
 </nav>
+{% comment %} 멜론 보면서 css 살짝식 수정, 그림 이미지 꽉 채우고, 옆에 좋아요 버튼도 추가. 밑에 수록곡 부분 색감 수정, 간격 수정{% endcomment %}
 <div id="detailBox">
     <div>
         {% comment %} 앨범 정보 {% endcomment %}
@@ -39,8 +40,9 @@
                     <th>곡명</th>
                     <th>아티스트</th>
                     <th>미리듣기</th>
-                    <th>플레이리스트 추가</th>
-                    <th>분석</th>
+                    <th>담기</th>
+                    <th></th>
+                    <th></th>
                 </tr>
                 {% for song in songs_data %}
                     <tr>
@@ -58,6 +60,7 @@
                             {% endif %}
                         </td> {# 미리듣기 표시 #}
                         <td><a href="#"><button><img src="{% static 'image/add_playlist.png' %}"></button></a></td> {# 플레이리스트 추가 버튼 #}
+                        <td><button class='Thumbs_up_btn'><img class='Thumbs_up_image' src="{% static 'image/Thumbs_up.png' %}"></button></td>
                         <td><a href="{% url 'analysis' song.song_id %}"><button class='audio_feature_btn' data-songid="{{song.song_id}}"><img src="{% static 'image/analysis.png' %}"></button></a></td> {# 분석 버튼 #}
                     </tr>
                 {% endfor %}
