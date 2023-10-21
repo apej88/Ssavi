@@ -31,18 +31,18 @@
             </tr>
         </table>
     </div>
-    <div>
+    <div id='album_song_box'>
         {% comment %} 수록곡 {% endcomment %}
         {% if songs_data %}
             <table id="album_songs">
                 <tr>
-                    <th>번호</th>
-                    <th>곡명</th>
-                    <th>아티스트</th>
-                    <th>미리듣기</th>
-                    <th>담기</th>
-                    <th></th>
-                    <th></th>
+                    <th id='album_song_no'>번호</th>
+                    <th id='album_song_name'>곡명</th>
+                    <th id='album_song_artist'>아티스트</th>
+                    <th id='album_song_preview'>미리듣기</th>
+                    <th id='album_song_playlist'>담기</th>
+                    <th id='album_song_thumbs'>좋아요</th>
+                    <th id='album_song_analysis'>분석</th>
                 </tr>
                 {% for song in songs_data %}
                     <tr>

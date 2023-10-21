@@ -9,7 +9,7 @@
 #album_detail {
     border-collapse: collapse;
     margin: 0 auto;
-    width: 80%;
+    width: 70%;
     margin-top: 20px;
     margin-bottom: 20px;
 }
@@ -44,7 +44,7 @@
 
 /* 앨범 안의 수록곡 정보 */
 #album_songs {
-    width: 80%;
+    width: 70%;
     border-collapse: collapse;
     margin-top: 20px;
     margin: 0 auto;
@@ -58,7 +58,22 @@
 }
 
 #album_songs th {
-    background-color: #f2f2f2;
+    background-color: skyblue;
+}
+
+#album_song_name {
+    width: 15%;
+}
+
+#song_no, #album_song_artist, #album_song_playlist, #album_song_thumbs, #album_song_analysis {
+    width: 10%;
+}
+
+#album_song_preview {
+    width: 35%;
+}
+#album_song_box {
+    margin-bottom: 40px;
 }
 
 /* 트랙 별 색상 바꾸기 */
