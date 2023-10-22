@@ -80,16 +80,16 @@
     color: darkgray;
 }
 
-#album_detail .description-cell .album_liked{
+#album_detail .description-cell .album_like{
     margin-top: 10px;
 }
 
-#album_detail .description-cell .album_liked img {
+#album_detail .description-cell .album_like img {
     max-width: 20px;
     max-height: 20px;
 }
 
-#album_detail .description-cell .album_liked button {
+#album_detail .description-cell .album_like button {
     background-color: transparent;
     color: #fff;
     border: none;
@@ -99,7 +99,7 @@
     transition: opacity 0.3s; /* 투명도 변화를 부드럽게 만들기 위한 트랜지션 설정 */
 }
 
-#album_detail .description-cell .album_liked button:hover {
+#album_detail .description-cell .album_like button:hover {
     opacity: 0.5;
 }
 
