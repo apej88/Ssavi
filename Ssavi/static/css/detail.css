@@ -6,12 +6,25 @@
 }
 
 /* 앨범 정보 */
+#album_box {
+    display: block;
+}
+
+#album_title {
+    width: 65%;
+    margin: 0 auto;
+}
+
+#album_title h2{
+    font-size: 30px;
+}
+
 #album_detail {
     border-collapse: collapse;
     margin: 0 auto;
-    width: 70%;
+    width: 65%;
     margin-top: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 #album_detail td {
@@ -26,8 +39,8 @@
     display: block;
 }
 
-#album_detail p {
-    margin-bottom: 10px;
+#album_detail strong {
+    color: #333;
 }
 
 #album_detail .image-cell {
@@ -38,16 +51,81 @@
     width: 70%; /* 설명 셀의 너비 */
 }
 
-#album_detail strong {
-    color: #333;
+#album_detail .description-cell p{
+    font-size: 15px;
+    /* margin-bottom: 30px; */
+    margin-left: 10px;
+}
+
+#album_detail .description-cell .album_name, .album_artist{
+    margin-left: 20px;
+    margin-bottom: 0;   
+    font-size: 30px;
+}
+
+#album_detail .description-cell .album_artist{
+    margin-top: 0;
+    margin-bottom: 60px;
+    font-size: 20px;
+    color: skyblue;
+}
+
+#album_detail .description-cell .album_detail{
+    margin-left: 20px;
+    color: gray;
+    margin-bottom: 5px;
+}   
+
+#album_detail .description-cell .album_detail span{
+    color: darkgray;
+}
+
+#album_detail .description-cell .album_liked{
+    margin-top: 10px;
+}
+
+#album_detail .description-cell .album_liked img {
+    max-width: 20px;
+    max-height: 20px;
+}
+
+#album_detail .description-cell .album_liked button {
+    background-color: transparent;
+    color: #fff;
+    border: none;
+    margin-left: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: opacity 0.3s; /* 투명도 변화를 부드럽게 만들기 위한 트랜지션 설정 */
+}
+
+#album_detail .description-cell .album_liked button:hover {
+    opacity: 0.5;
 }
 
 /* 앨범 안의 수록곡 정보 */
 #album_songs {
-    width: 70%;
+    width: 65%;
     border-collapse: collapse;
     margin-top: 20px;
     margin: 0 auto;
+}
+
+#album_song_box {
+    display: block;
+}
+
+#album_song_title {
+    width: 65%;
+    margin: 0 auto;
+}
+
+#album_song_title p{
+    font-size: 20px;
+}
+
+#album_song_title span{
+    color: gray;
 }
 
 #album_songs th, #album_songs td {
@@ -72,6 +150,7 @@
 #album_song_preview {
     width: 35%;
 }
+
 #album_song_box {
     margin-bottom: 40px;
 }

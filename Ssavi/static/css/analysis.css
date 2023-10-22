@@ -28,8 +28,7 @@
 }
 
 .current-track img {
-    width: 750px;
-    height: 750px;
+    max-width: 80%;
 }
 
 .current-track p {
@@ -76,13 +75,14 @@
 }
 
 .recommendation > img {
-    max-width: 500px;
-    margin-left: 100px;
+    max-width: 50%;
+    margin-left: 5%;
 }
 
 /* 곡 정보 스타일 */
 .recommendation-info {
     flex: 1;
+    margin-right: 5%;
 }
 
 .recommendation-info p {
@@ -110,7 +110,7 @@
     opacity: 0.5;
 }
 
-@media (max-width: 1550px) {
+@media (max-width: 768px) {
     #analysis {
         flex-direction: column; /* 화면 너비가 작을 때 세로로 정렬 */
     }
