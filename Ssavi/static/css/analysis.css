@@ -31,9 +31,44 @@
     max-width: 80%;
 }
 
-.current-track p {
-    font-size: 40px;
-    margin: 0;
+.current_album_image {
+    width: 70%;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.current_album_image img {
+    margin-top: 40px;
+}
+
+.current_list {
+    justify-content: center;
+    width: 100%;
+    display: flex;
+    margin: 0 auto;
+}
+
+.current_list button {
+    background-color: transparent;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: opacity 0.3s; /* 투명도 변화를 부드럽게 만들기 위한 트랜지션 설정 */
+}
+
+.current_list button img {
+    max-width: 20px;
+    max-height: 20px;
+}
+
+.current_list button:hover {
+    opacity: 0.5;
+}
+
+.current_preview audio{
+    width: 50%;
 }
 
 #audio_feature ul p{
@@ -46,6 +81,7 @@
     color: red;
 }
 
+/* 추천 음악 구성 */
 .recommendations {
     width: 50%;
     text-align: center;
@@ -71,24 +107,23 @@
 .recommendation {
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    margin-top: 40px;
 }
 
-.recommendation > img {
-    max-width: 50%;
-    margin-left: 5%;
-}
-
-/* 곡 정보 스타일 */
 .recommendation-info {
-    flex: 1;
-    margin-right: 5%;
+    width: 40%;
+    margin-left: 15%;
 }
 
-.recommendation-info p {
-    font-size: 25px;
-    margin: 0;
-    margin-bottom: 10px;
+.recommendation_album_image img {
+    width: 70%;
+    border: 1px solid black;
+}
+
+.recommendation_list {
+    width: 70%;
+    margin: 0 auto;
 }
 
 .recommendations button {
@@ -102,17 +137,31 @@
 }
 
 .recommendations button img {
-    max-width: 50px;
-    max-height: 50px;
+    width: 25px;
+    height: 25px;
 }
 
 .recommendations button:hover {
     opacity: 0.5;
 }
 
+.recommendation_preview audio{
+    width: 100%;
+}
+
+.recommendation_graph {
+    width: 55%;
+    margin-right: 15%;
+}
+
+.recommendation_graph img {
+    width: 100%;
+}
+
+/* 화면 너비가 작을 때 세로로 정렬 */
 @media (max-width: 768px) {
     #analysis {
-        flex-direction: column; /* 화면 너비가 작을 때 세로로 정렬 */
+        flex-direction: column;
     }
 
     .current-track, .recommendations {

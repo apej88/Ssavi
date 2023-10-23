@@ -9,10 +9,24 @@
 </nav>
 <div id="analysis">
     <div class="current-track">
-        <h1>현재 곡 정보</h1>
-        <img src="data:image/png;base64,{{ image }}">
-        <p>곡명: {{ current_song.0 }}</p>   
-        <p>가수: {{ current_song.1 }}</p>
+        <h1>현재 음악</h1>
+        <div>
+            <div class="current_album_image">
+                <img src="{{ current_song.0 }}">
+            </div>
+            <div class="current_list">
+                <h3>{{ current_song.1 }} - {{ current_song.2 }}</h3>
+                <button class='like_btn'><img class='like_image' src="{% static 'image/like.png' %}"></button>
+            </div>
+            <div class="current_preview">
+                    <audio controls>
+                        <source src="{{ current_song.3 }}" type="audio/mpeg">
+                    </audio>
+                </div>
+        </div>
+        <div>
+            <img src="data:image/png;base64,{{ image }}">
+        </div>
         <div id="audio_feature">
             <li id="audio_feature_list">
                 <ul><p><span>acousticness</span> : 트랙이 음향인지 여부에 대한 0.0에서 1.0 사이의 신뢰도 측정값입니다. 1.0은 트랙이 음향적이라는 높은 신뢰도를 나타냅니다.</p></ul>
@@ -26,45 +40,105 @@
         </div>
     </div>
     <div class="recommendations">
-        <h1>추천 곡 목록</h1>
+        <h1>추천 음악</h1>
         <div class="recommendation">
-            <img src="data:image/png;base64,{{ recommendation_images.0 }}">
             <div class="recommendation-info">
-                <p>곡명: {{ recommendation_track.0 }}</p>
-                <p>가수: {{ recommendations_artist.0 }}</p>
-                <button class='Thumbs_up_btn'><img class='Thumbs_up_image' src="{% static 'image/Thumbs_up.png' %}"></button>
+                <div class="recommendation_album_image">
+                    <img src="{{ recommendation_album_images.0 }}">
+                </div>
+                <div class="recommendation_list">
+                    <h3>{{ recommendation_track_names.0 }} - {{ recommendation_track_artists.0 }}</h3>
+                    <button><img src="{% static 'image/add_playlist.png' %}"></button>
+                    <button class='Thumbs_up_btn'><img class='Thumbs_up_image' src="{% static 'image/Thumbs_up.png' %}"></button>
+                </div>
+                <div class="recommendation_preview">
+                    <audio controls>
+                        <source src="{{ recommendation_tracks_preview_urls.0 }}" type="audio/mpeg">
+                    </audio>
+                </div>
+            </div>
+            <div class="recommendation_graph">
+                <img src="data:image/png;base64,{{ recommendations_images.0 }}">
             </div>
         </div>
         <div class="recommendation">
-            <img src="data:image/png;base64,{{ recommendation_images.1 }}">
             <div class="recommendation-info">
-                <p>곡명: {{ recommendation_track.1 }}</p>
-                <p>가수: {{ recommendations_artist.1 }}</p>
-                <button class='Thumbs_up_btn'><img class='Thumbs_up_image' src="{% static 'image/Thumbs_up.png' %}"></button>
+                <div class="recommendation_album_image">
+                    <img src="{{ recommendation_album_images.1 }}">
+                </div>
+                <div class="recommendation_list">
+                    <h3>{{ recommendation_track_names.1 }} - {{ recommendation_track_artists.1 }}</h3>
+                    <button><img src="{% static 'image/add_playlist.png' %}"></button>
+                    <button class='Thumbs_up_btn'><img class='Thumbs_up_image' src="{% static 'image/Thumbs_up.png' %}"></button>
+                </div>
+                <div class="recommendation_preview">
+                    <audio controls>
+                        <source src="{{ recommendation_tracks_preview_urls.1 }}" type="audio/mpeg">
+                    </audio>
+                </div>
+            </div>
+            <div class="recommendation_graph">
+                <img src="data:image/png;base64,{{ recommendations_images.1 }}">
             </div>
         </div>
         <div class="recommendation">
-            <img src="data:image/png;base64,{{ recommendation_images.2 }}">                 
             <div class="recommendation-info">
-                <p>곡명: {{ recommendation_track.2 }}</p>
-                <p>가수: {{ recommendations_artist.2 }}</p>
-                <button class='Thumbs_up_btn'><img class='Thumbs_up_image' src="{% static 'image/Thumbs_up.png' %}"></button>
+                <div class="recommendation_album_image">
+                    <img src="{{ recommendation_album_images.2 }}">
+                </div>
+                <div class="recommendation_list">
+                    <h3>{{ recommendation_track_names.2 }} - {{ recommendation_track_artists.2 }}</h3>
+                    <button><img src="{% static 'image/add_playlist.png' %}"></button>
+                    <button class='Thumbs_up_btn'><img class='Thumbs_up_image' src="{% static 'image/Thumbs_up.png' %}"></button>
+                </div>
+                <div class="recommendation_preview">
+                    <audio controls>
+                        <source src="{{ recommendation_tracks_preview_urls.2 }}" type="audio/mpeg">
+                    </audio>
+                </div>
+            </div>
+            <div class="recommendation_graph">
+                <img src="data:image/png;base64,{{ recommendations_images.2 }}">
             </div>
         </div>
         <div class="recommendation">
-            <img src="data:image/png;base64,{{ recommendation_images.3 }}">
             <div class="recommendation-info">
-                <p>곡명: {{ recommendation_track.3 }}</p>
-                <p>가수: {{ recommendations_artist.3 }}</p>
-                <button class='Thumbs_up_btn'><img class='Thumbs_up_image' src="{% static 'image/Thumbs_up.png' %}"></button>
+                <div class="recommendation_album_image">
+                    <img src="{{ recommendation_album_images.3 }}">
+                </div>
+                <div class="recommendation_list">
+                    <h3>{{ recommendation_track_names.3 }} - {{ recommendation_track_artists.3 }}</h3>
+                    <button><img src="{% static 'image/add_playlist.png' %}"></button>
+                    <button class='Thumbs_up_btn'><img class='Thumbs_up_image' src="{% static 'image/Thumbs_up.png' %}"></button>
+                </div>
+                <div class="recommendation_preview">
+                    <audio controls>
+                        <source src="{{ recommendation_tracks_preview_urls.3 }}" type="audio/mpeg">
+                    </audio>
+                </div>
+            </div>
+            <div class="recommendation_graph">
+                <img src="data:image/png;base64,{{ recommendations_images.3 }}">
             </div>
         </div>
         <div class="recommendation">
-            <img src="data:image/png;base64,{{ recommendation_images.4 }}">
             <div class="recommendation-info">
-                <p>곡명: {{ recommendation_track.4 }}</p>
-                <p>가수: {{ recommendations_artist.4 }}</p>
-                <button class='Thumbs_up_btn'><img class='Thumbs_up_image' src="{% static 'image/Thumbs_up.png' %}"></button>
+                <div class="recommendation_album_image">
+                    <img src="{{ recommendation_album_images.4 }}">
+                </div>
+                <div class="recommendation_list">
+                    <h3>{{ recommendation_track_names.4 }} - {{ recommendation_track_artists.4 }}</h3>
+                    <button><img src="{% static 'image/add_playlist.png' %}"></button>
+                    <button class='Thumbs_up_btn'><img class='Thumbs_up_image' src="{% static 'image/Thumbs_up.png' %}"></button>
+                </div>
+                <div class="recommendation_preview">
+                    <audio controls class="preview">
+                        <source src="{{ recommendation_tracks_preview_urls.4 }}" type="audio/mpeg">
+                    </audio>
+                </div>
+            </div>
+            <div class="recommendation_graph">
+                <img src="data:image/png;base64,{{ recommendations_images.4 }}">
             </div>
         </div>
     </div>

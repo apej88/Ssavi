@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
-from .models import Albums, AudioFeatures, Kpop, Jpop, Jazz, Latin, Alternative, Hiphop, Rnb, Rock, Indiepop
+from .models import Albums, Tracks, AudioFeatures, Kpop, Jpop, Jazz, Latin, Alternative, Hiphop, Rnb, Rock, Indiepop
 
 client_credentials_manager = SpotifyClientCredentials(client_id='c0ef6b3167de4affb312e7fc7366abb4', client_secret='86babd771d3c4098b90fc70ed221cd60')
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
@@ -48,17 +48,22 @@ import base64
 def analysis(request, song_id):
     # 곡의 audio feature 불러오기
     audio_feature = get_object_or_404(AudioFeatures, pk=song_id)
+    Track = get_object_or_404(Tracks, pk=song_id)
     feat_cols = ['acousticness', 'danceability', 'energy', 'loudness', 'speechiness', 'tempo', 'valence']
     
     # song_id를 가지고 장르 뽑기
     track_info = sp.track(song_id)
+    album_id = track_info['album']['id']
+    album_info = sp.album(album_id)
+    album_images = album_info['images']
+    album_image_url = album_images[0]['url']
     song_name = track_info['name']
     artist_id = track_info["artists"][0]["id"]
     artists_info = sp.artist(artist_id)
     artist_name = artists_info['name']
     genre = artists_info["genres"][0]
     
-    current_song = [song_name, artist_name]
+    current_song = [album_image_url, song_name, artist_name, Track.track_preview]
     
     # 각 장르마다 평균 audio feature를 구하기 위해 모델 오브젝트 불러옴
     if genre=='k-pop':
@@ -144,23 +149,43 @@ def analysis(request, song_id):
     image_data = base64.b64encode(buffer.read()).decode('utf-8')
     
     plt.close(fig)
-    ##############################################################################################################
+    ####################################################################################################################################
     # 같은 장르의 다른 곡들 추천
     recommendations = sp.recommendations(seed_tracks=[song_id], limit=7)
 
-    # 추천 곡과 곡 제목, 가수, 그래프 이미지 저장
+    # 추천 곡과 앨범 이미지, 곡 제목, 가수, 그래프 이미지 저장
+    recommendation_album_images = []
+    recommendation_album_id = []
     recommendation_tracks = []
     recommendation_track_names = []
     recommendation_track_artists = []
+    recommendation_tracks_preview_urls = []
     recommendations_images = []
 
     for track in recommendations['tracks']:
         if track['id'] != song_id and track['id'] not in recommendation_tracks and track['name'] not in recommendation_track_names:
+            recommendation_album_id.append(track['album']['id'])
+            recommendation_album_images.append(track['album']['images'][0]['url'])
             recommendation_tracks.append(track['id'])
             recommendation_track_names.append(track['name'])
             artists = [artist['name'] for artist in track['artists']]
             artists_str = ', '.join(artists)
             recommendation_track_artists.append(artists_str)
+            recommendation_tracks_preview_urls.append(track['preview_url'])
+    
+    # # 데이터베이스에 곡이 없으면 저장
+    # for track_id, track_name, track_preview, album_id in zip(recommendation_tracks, recommendation_track_names, recommendation_tracks_preview_urls, recommendation_album_id):
+    #     existing_track = Track.objects.filter(track_id=track_id).first()
+
+    #     if not existing_track:
+    #         new_track = Track(
+    #             track_id=track_id,
+    #             track_name=track_name,
+    #             track_preview=track_preview,
+    #             album=album_id
+    #         )
+    #         new_track.save()
+
     
     for i in range(0, 5):
         audio_features = sp.audio_features(recommendation_tracks[i])
@@ -201,8 +226,18 @@ def analysis(request, song_id):
         image_data1 = base64.b64encode(buffer.read()).decode('utf-8')
         recommendations_images.append(image_data1)
         plt.close(fig)
+        
+    context = {
+        'image' : image_data,
+        'current_song' : current_song,
+        'recommendation_album_images': recommendation_album_images,
+        'recommendation_track_names': recommendation_track_names,
+        'recommendation_track_artists' : recommendation_track_artists,
+        'recommendation_tracks_preview_urls' : recommendation_tracks_preview_urls,
+        'recommendations_images' : recommendations_images
+    }
 
-    return render(request, 'Ssavi_app/analysis.html', {'image': image_data, 'recommendation_images' : recommendations_images, 'current_song' : current_song, 'recommendation_track' : recommendation_track_names, 'recommendations_artist' : recommendation_track_artists})
+    return render(request, 'Ssavi_app/analysis.html', context)
 
 
 def recommend(request):

@@ -70,7 +70,7 @@
                             <td>{{ song.song_artist }}</td>
                             <td>
                                 {% if song.song_preview_url %}
-                                    <audio controls>
+                                    <audio controls class="preview">
                                         <source src="{{ song.song_preview_url }}" type="audio/mpeg">
                                         브라우저가 오디오를 지원하지 않습니다.
                                     </audio>
