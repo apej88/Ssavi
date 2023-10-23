@@ -6,6 +6,7 @@
 }
 
 nav.menu {
+    margin: 20px 0 20px 0;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -19,7 +20,6 @@ nav.menu a {
 }
 
 #indexBox {
-    margin-top: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -27,32 +27,47 @@ nav.menu a {
     border: 1px solid black;
 }
 
-#album_box {
-    display: flex;
-    justify-content: center; /* 테이블을 수평으로 가운데 정렬 */
-    height: auto;
-}
+ /* 스타일을 조절하세요 */
+ .album {
+    position: relative; /* 추가: 상위 div에 대한 상대 위치 설정 */
+    float: left;
+    margin: 10px;
+    width: 200px; /* 앨범 카드의 너비를 조절하세요 */
+  }
 
-#album_result {
-    text-align: center; /* 테이블 셀의 텍스트 가운데 정렬 */
-}
-
-#album_result td {
-    margin: 0 auto; /* 테이블 셀 가로 방향 가운데 정렬 */
-    vertical-align: middle; /* 테이블 셀의 콘텐츠를 수직으로 가운데 정렬 */
-}
-
-#album_result td img {
-    width: 254px; /* 이미지의 너비를 254px로 설정 */
-    height: 254px; /* 이미지의 높이를 254px로 설정 (선택 사항) */
-}
-
-.search {
-    display: none; /* 초기에는 숨김 /
-    position: absolute;
-    top: 100%; / 로고와 메뉴 아래에 위치하도록 설정 */
-    left: 0;
+  .album_img {
     width: 100%;
-    background-color: #fff;
-    border: 1px solid #ccc;
-}
+    height: auto;
+  }
+
+  .album_info {
+    display: none; /* 기본적으로 숨김 */
+    position: absolute; /* 추가: 상위 div를 기준으로 절대 위치 설정 */
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    text-align: center;
+    bottom: 0;
+    width: 100%; /* 이미지와 동일한 너비 */
+    height: 100%; /* 이미지와 동일한 높이 */
+
+
+  }
+
+  .album_info p{
+    margin-top: 20px;
+
+  }
+  .like-button button {
+    background: #3498db;
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+
+  .clear {
+    clear: both;
+  }

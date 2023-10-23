@@ -1,4 +1,33 @@
 <!-- 회원가입 -->
+{% extends 'base.html' %}
+{% load static %}
 {% block content %}
-
+<div id="users">
+    <div class="login-wrapper">
+        <h2>Join</h2>
+        <form action="" method="post" id="login-form">
+            {% csrf_token %}
+            <input id="input_id" type="text" name="username" placeholder="ID" required>
+            <button class="id_check" type="button" value="id_check">아이디 중복 확인</button>
+            <input type="password" name="password" placeholder="Password" required>
+            <input type="text" name="user_name" placeholder="Name" required>
+            <input type="text" name="email" placeholder="Email" required>
+            <label for="remember-check">Favourite genre
+                <input type="checkbox" name="genre_list" value="k-pop">K-POP
+                <input type="checkbox" name="genre_list" value="jazz">JAZZ
+                <input type="checkbox" name="genre_list" value="R&b">R&B
+                <input type="checkbox" name="genre_list" value="latin">LATIN
+                <input type="checkbox" name="genre_list" value="J-pop">J-POP
+                <input type="checkbox" name="genre_list" value="alternative">Alternative
+                <input type="checkbox" name="genre_list" value="electro">Electro
+                <input type="checkbox" name="genre_list" value="hip hop">Hip-hop
+                <input type="checkbox" name="genre_list" value="Indie Pop">Indie-POP
+                <input type="checkbox" name="genre_list" value="rock">ROCK
+            </label>
+            <input type="submit" value="Join">
+        </form>
+    </div>
+</div>
+<script src="{% static '/js/jquery-3.7.1.min.js' %}"></script>
+<script src="{% static '/js/IDcheck.js' %}"></script>
 {% endblock content %}

@@ -3,50 +3,53 @@
 {% load static %}
 {% block content %}
 <nav class="menu">
-    <a href="{% url 'recommend' %}">추천음악</a>
+    {% if user.is_authenticated %}
+    <a href="{% url 'recommend' %}">장르별 음악</a>
     <a href="{% url 'index' %}">최신음악</a>
-    <a href="#">선호음악</a>
+    <a href="#">음악 추천 받기</a>
+    {% else %}
+    <a href="{% url 'recommend' %}">장르별 음악</a>
+    <a href="{% url 'index' %}">최신음악</a>
+    {% endif %}
 </nav>
-<div id="indexBox">
+<div id="recomBox">
     <article>
-        <div id="recommend">
-            <table id="album_result">
-                <tr>
-                    <td>
-                        <a href=""><img src="{% static '/image/post1.jpg' %}" alt=""></a>
-                    </td>
-                    <td>
-                        <a href=""><img src="{% static '/image/post1.jpg' %}" alt=""></a>
-                    </td>
-                    <td>
-                        <a href=""><img src="{% static '/image/post1.jpg' %}" alt=""></a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <a href=""><img src="{% static '/image/post1.jpg' %}" alt=""></a>
-                    </td>
-                    <td>
-                        <a href=""><img src="{% static '/image/post1.jpg' %}" alt=""></a>
-                    </td>
-                    <td>
-                        <a href=""><img src="{% static '/image/post1.jpg' %}" alt=""></a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <a href=""><img src="{% static '/image/post1.jpg' %}" alt=""></a>
-                    </td>
-                    <td>
-                        <a href=""><img src="{% static '/image/post1.jpg' %}" alt=""></a>
-                    </td>
-                    <td>
-                        <a href=""><img src="{% static '/image/post1.jpg' %}" alt=""></a>
-                    </td>
-                </tr>
-                <tr><th>추천음악</th></tr>
-            </table>
+        {% if user_genre_list %}
+        {% for user_genre in user_genre_list %}
+        <div>
+            <h3>{{ user_genre|upper }}</h3>
+        <div class="recom_display">
+            {% for album in recom_albums %}
+            {% if album.album_genre == user_genre %}
+            <div class="recom_item">
+                <a href="{% url 'detail' %}" class="recom_img_box" onmouseover="displayAlbumInfo(this)">
+                    <img class="recom_img" src="{{ album.album_image }}" alt="" onmouseover="displayAlbumInfo(this)">
+                    <div class="album_info">
+                        <p class="album_name">{{ album.album_name }}</p>
+                        <p class="artist_name">{{ album.album_artist }}</p>
+                        <p class="release_date">{{ album.album_release_date }}</p>
+                        <div class="like-button">
+                            <img onclick="likeAlbum(this)" src="{% static '/image/heart_icon1.png' %}" alt="Liked">
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endif %}
+            {% endfor %}
+            <hr>
         </div>
+            <button class="back">＜</button>
+            <button class="next">＞</button>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div>
+            <h1>아직 선택하신 장르가 없습니다!</h1>
+        </div>
+        {% endif %}
     </article>
 </div>
+
+<script src="{% static '/js/recommend.js' %}"></script>
+<script src="{% static '/js/test' %}"></script>
 {% endblock content %}

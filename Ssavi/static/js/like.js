@@ -1,21 +1,40 @@
-// 페이지가 로드 될 때 밑에 코드들이 동작한다.
-// 로드되었을 때 유저정보를 미리 받아와서 그 곡에대해 좋아요를 눌렀으면
-// 이미지의 src 값을 바꾸어 주어야 한다.
-// 그리고 좋아요를 눌렀을 때 liked_track table에 저장되어야 한다.
-// 좋아요를 취소했을 때 liked_track table에 저장된 정보를 삭제해야 한다.
-document.addEventListener('DOMContentLoaded', function() {
-    var images = document.querySelectorAll('.like_image');
-    var changeButtons = document.querySelectorAll('.like_btn');
-    var imageSources = [
-        "/static/image/like_fill.png",
-        "/static/image/like.png"
-    ];
-    var imageIndices = Array.from({ length: changeButtons.length }, () => 1);
+// const csrf_token = "{{ csrf_token|escapejs }}";
+// document.addEventListener("DOMContentLoaded", function () {
+//     const likeButton = document.getElementById('likeButton');
+//     const likeImage = document.getElementById('likeImage');
+//     let isLiked = false; // 초기 상태는 "좋아요"하지 않은 상태
 
-    changeButtons.forEach(function(button, index) {
-        button.addEventListener('click', function() {
-            imageIndices[index] = (imageIndices[index] + 1) % imageSources.length;
-            images[index].src = imageSources[imageIndices[index]];
-        });
-    });
-});
+//     likeButton.addEventListener('click', function() {
+//         // 이미지를 변경하고 클릭 상태를 변경
+//         if (!isLiked) {
+//             likeImage.src = "{% static 'image/like_fill.png' %}";
+//             isLiked = true;
+//         } else {
+//             likeImage.src = "{% static 'image/like.png' %}";
+//             isLiked = false;
+//         }
+
+//         // 앨범 ID와 유저 ID 가져오기
+//         const albumId = this.getAttribute('data-album-id');
+//         const userId = this.getAttribute('data-user-id');
+
+//         // 서버로 데이터 전송
+//         fetch('/toggle-like-album/', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'X-CSRFToken': csrf_token, // CSRF 토큰을 전송해야 함
+//             },
+//             body: JSON.stringify({albumId, userId, isLiked}),
+//         })
+//         .then(response => response.json())
+//         .then(data => {
+//             // 서버로부터 응답을 처리 (예: 성공 메시지)
+//             console.log(data);
+//         })
+//         .catch(error => {
+//             console.error('Error:', error);
+//         });
+//     });
+// });
+

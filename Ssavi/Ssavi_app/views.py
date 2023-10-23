@@ -1,10 +1,13 @@
 from django.db.models import Avg
-from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
+from django.shortcuts import redirect, render, get_object_or_404
 
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
-from .models import Albums, Tracks, AudioFeatures, Kpop, Jpop, Jazz, Latin, Alternative, Hiphop, Rnb, Rock, Indiepop
+from .models import UsersAppUser
+
+from .models import Albums, LikedAlbum, Tracks, AudioFeatures, Kpop, Jpop, Jazz, Latin, Alternative, Hiphop, Rnb, Rock, Indiepop
 
 client_credentials_manager = SpotifyClientCredentials(client_id='c0ef6b3167de4affb312e7fc7366abb4', client_secret='86babd771d3c4098b90fc70ed221cd60')
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
@@ -13,10 +16,91 @@ sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 def index(request):
     return render(request, 'Ssavi_app/index.html')
 
+def recommend(request):
+    # 로그인하지 않은 채 그냥 들어간다면 장르는 except로 고정된다.
+    # 유저의 인증정보를 조회하여 id값을 보낸다.
+    # 
+    if request.user.is_authenticated:
+        user_id = request.user.id
+        # user_genre_list = DBsearch.selectUserGenre(str(user_id))
+
+        # user_id 정수를 받아오면 users_app_user에서 user_genre 검색
+        try:
+            current_login_user = UsersAppUser.objects.get(id=user_id)
+            if current_login_user.user_genre is None:
+                user_genre_list = []
+            else:
+                user_genre_list = current_login_user.user_genre.split(",")
+        except UsersAppUser.DoesNotExist:
+            user_genre_list = []
+
+        # filter_query = Q()
+        # for genre in user_genre_list:
+        #     filter_query |= Q(album_genre__contains=genre)
+
+        # recom_albums = Albums.objects.filter(filter_query)
+        recom_albums = Albums.objects.all()
+
+        return render(request, 'Ssavi_app/genre_music.html', {'recom_albums':recom_albums, 'user_genre_list':user_genre_list})
+
+    else:
+        user_genre_list = ['jazz', 'k-pop', 'J-pop', 'R&b']
+        recom_albums = Albums.objects.all()
+    return render(request, 'Ssavi_app/genre_music.html', {'recom_albums':recom_albums, 'user_genre_list':user_genre_list})
+
+def get_albuminfo():
+    search_result = sp.new_releases(country='KR', limit=9)
+    album_infos = []
+    album_image_urls = []
+
+    for re in search_result['albums']['items']:
+        album_image_urls.append(re['name'])
+        album_image_urls.append(re['artists'][0]['name'])
+        album_image_urls.append(re['release_date'])
+        for imagemedium in re['images']:
+            if imagemedium.get('height') == 300:
+                album_image_urls.append(imagemedium['url'])
+
+    for i in range(0, len(album_image_urls), 4):
+        album_info = {
+            'albumname': album_image_urls[i],
+            'artistname': album_image_urls[i+1],
+            'releasedate': album_image_urls[i+2],
+            'url': album_image_urls[i+3]
+        }
+        album_infos.append(album_info)
+
+    return album_infos
+
+def album_list(request):
+    albums = Albums.objects.all()[:12]
+    return render(request, 'Ssavi_app/index.html', {'albums': albums})
+
+# from django.views.decorators.csrf import csrf_exempt
+# @csrf_exempt
+# def toggle_like_album(request):
+#     if request.method == 'POST':
+#         # 클라이언트에서 POST 요청으로 전송한 데이터 가져오기
+#         album_id = request.POST.get('albumId')
+#         user_id = request.POST.get('userId')
+#         is_liked = request.POST.get('isLiked')
+
+#         # 데이터베이스에서 해당 레코드를 찾거나 생성
+#         liked_album, created = LikedAlbum.objects.get_or_create(album_id=album_id, user_id=user_id)
+
+#         if is_liked == 'true':
+#             liked_album.save()  # 좋아요 추가
+#         else:
+#             liked_album.delete()  # 좋아요 삭제
+
+#         return JsonResponse({'message': 'Success'})
+#     else:
+#         return JsonResponse({'message': 'Invalid request method'}, status=400)
+    
 def detail(request, ab_id):
     album = get_object_or_404(Albums, pk=ab_id)
     songs = sp.album_tracks(album_id=ab_id)['items']
-    songs_data = [] # 앨범 안의 노래들의 정보를 담을 리스트
+    songs_data = []  # 앨범 안의 노래들의 정보를 담을 리스트
 
     for s in range(0, len(songs)):
         song = {}  # 각 노래의 정보를 저장할 딕셔너리 생성
@@ -29,15 +113,30 @@ def detail(request, ab_id):
     # 장르가 문자열로 되어있기 때문에 문자 제외한 부분 제거하고 리스트로 저장.
     genres = album.album_genre.strip('[]').replace("'", "").split(', ')
 
+    if request.method == 'POST':
+        # 클라이언트에서 POST 요청으로 전송한 데이터 가져오기
+        album_id = request.POST.get('albumId')
+        user_id = request.POST.get('userId')
+        is_liked = request.POST.get('isLiked')
+
+        # 데이터베이스에서 해당 레코드를 찾거나 생성
+        liked_album, created = LikedAlbum.objects.get_or_create(album_id=album_id, user_id=user_id)
+
+        if is_liked == 'true':
+            liked_album.save()  # 좋아요 추가
+        else:
+            liked_album.delete()  # 좋아요 삭제
+
+        return JsonResponse({'message': 'Success'})
+    
     # 앨범 데이터와 노래 데이터, 장르 반환
     context = {
         'album': album,
         'songs_data': songs_data,
-        'genres' : genres
+        'genres': genres,
     }
 
     return render(request, 'Ssavi_app/detail.html', context)
-
 
 import matplotlib
 matplotlib.use('Agg')  # Matplotlib이 인터페이스를 생성하지 않도록 설정

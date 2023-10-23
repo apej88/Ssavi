@@ -1,4 +1,19 @@
 <!-- 로그인 -->
+{% extends 'base.html' %}
 {% block content %}
-
+<div id="users">
+    <div class="login-wrapper">
+        <h2>Login</h2>
+        <form action="" method="post" id="login-form">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="ID">
+            <input type="password" name="password" placeholder="Password">
+            <label for="remember-check">
+                <input type="checkbox" id="remember-check">아이디 저장하기
+            </label>
+            <button id="loginBtn" type="submit">로그인</button>
+            <!-- <input type="button"  onClick="location.href='../sign_up'" value="Join"> -->
+        </form>
+    </div>
+</div>
 {% endblock content %}

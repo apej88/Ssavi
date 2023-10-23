@@ -7,9 +7,7 @@
     <a href="{% url 'index' %}">최신 음악</a>
     <a href="#">음악 추천 받기</a>
 </nav>
-{% comment %} 멜론 보면서 css 살짝식 수정, 그림 이미지 꽉 채우고, 옆에 좋아요 버튼도 추가. 밑에 수록곡 부분 색감 수정, 간격 수정{% endcomment %}
 <div id="detailBox">
-    {% comment %} 앨범 정보 {% endcomment %}
     <div id='album_box'>
         <div id='album_title'>
             <h2>앨범 정보</h2>
@@ -18,11 +16,9 @@
             <table>
                 <tr>
                     <td class="image-cell">
-                        {% comment %} 앨범 이미지 {% endcomment %}
                         <img src="{{ album.album_image }}">
                     </td>
-                    <td class="description-cell"> 
-                    {% comment %} 앨범 설명 {% endcomment %}
+                    <td class="description-cell">
                         <div class='album_name'>
                             {{ album.album_name }}
                         </div>
@@ -39,14 +35,15 @@
                                 {% endfor %}
                         </div>
                         <div class='album_like'>
-                            <button class='like_btn'><img class='like_image' src="{% static 'image/like.png' %}"></button>
+                            <button class="like_btn" id="likeButton" data-album-id="{{album.album_id}}" data-user-id="abcd">
+                                <img id="likeImage" src="{% static 'image/like.png' %}">
+                            </button>
                         </div>
                     </td>
                 </tr>
             </table>
         </div>
     </div>
-    {% comment %} 수록곡 {% endcomment %}
     <div id='album_song_box'>
         <div id='album_song_title'>
             <p>수록곡 <span>({{songs_data|length}})</span></p>
@@ -77,10 +74,10 @@
                                 {% else %}
                                     미리듣기 없음
                                 {% endif %}
-                            </td> {# 미리듣기 표시 #}
-                            <td><a href="#"><button><img src="{% static 'image/add_playlist.png' %}"></button></a></td> {# 플레이리스트 추가 버튼 #}
+                            </td>
+                            <td><a href="#"><button><img src="{% static 'image/add_playlist.png' %}"></button></a></td>
                             <td><button class='Thumbs_up_btn'><img class='Thumbs_up_image' src="{% static 'image/Thumbs_up.png' %}"></button></td>
-                            <td><a href="{% url 'analysis' song.song_id %}"><button class='audio_feature_btn' data-songid="{{song.song_id}}"><img src="{% static 'image/analysis.png' %}"></button></a></td> {# 분석 버튼 #}
+                            <td><a href="{% url 'analysis' song.song_id %}"><button class='audio_feature_btn' data-songid="{{song.song_id}}"><img src="{% static 'image/analysis.png' %}"></button></a></td>
                         </tr>
                     {% endfor %}
                 </table>
