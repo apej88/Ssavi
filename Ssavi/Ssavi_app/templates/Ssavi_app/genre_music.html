@@ -1,0 +1,99 @@
+<!-- 추천페이지입니다 -->
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/recommend.css' %}">
+
+{% if user.is_authenticated %}
+<nav class="menu">
+    <a href="{% url 'genre_albums' %}">장르별 음악</a>
+    <a href="{% url 'index' %}">최신음악</a>
+    <a href="#">음악 추천 받기</a>
+</nav>
+<div id="recomBox">
+    <h2>'{{ user.user_name }}'님께서 선택하신 장르입니다.</h2>
+    <article>
+        {% if user_genre_list %}
+        {% for user_genre in user_genre_list %}
+        <div class="recom-group">
+            <h3>{{ user_genre|upper }}</h3>
+            <div class="recom_display">
+                {% for album in recom_albums %}
+                {% if album.album_genre == user_genre %}
+                <div class="recom_item">
+                    <p class="album_id">{{ album.album_id }}</p>
+                    <a href="{% url 'detail' album.album_id %}" class="recom_img_box" onmouseover="displayAlbumInfo(this)">
+                        <img class="recom_img" src="{{ album.album_image }}" alt="" onmouseover="displayAlbumInfo(this)">
+                        <div class="album_info">
+                            <p class="album_name">{{ album.album_name }}</p>
+                            <p class="artist_name">{{ album.album_artist }}</p>
+                            <p class="release_date">{{ album.album_release_date }}</p>
+                            <div class="like-button">
+                                <img onclick="likeAlbum(this)" src="{% static '/image/heart_icon1.png' %}" alt="Liked">
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            <button class="back">←</button>
+            <button class="next">→</button>
+        </div>
+        <hr>
+        {% endfor %}
+        {% else %}
+        <div class="no_genre">
+            <h1>아직 선택하신 장르가 없습니다!</h1>
+        </div>
+        {% endif %}
+    </article>
+</div>
+    {% else %}
+<nav class="menu">
+    <a href="{% url 'genre_albums' %}">장르별 음악</a>
+    <a href="{% url 'index' %}">최신음악</a>
+</nav>
+<div id="recomBox">
+    <h2>현재 최신 인기 앨범들을 만나보세요!</h2>
+    <article>
+        {% if user_genre_list %}
+        {% for user_genre in user_genre_list %}
+        <div class="recom-group">
+            <h3>{{ user_genre|upper }}</h3>
+            <div class="recom_display">
+                {% for album in recom_albums %}
+                {% if album.album_genre == user_genre %}
+                <div class="recom_item">
+                    <a href="{% url 'detail' ab_id=album.album_id %}" class="recom_img_box" onmouseover="displayAlbumInfo(this)">
+                        <img class="recom_img" src="{{ album.album_image }}" alt="" onmouseover="displayAlbumInfo(this)">
+                        <div class="album_info">
+                            <p class="album_name">{{ album.album_name }}</p>
+                            <p class="artist_name">{{ album.album_artist }}</p>
+                            <p class="release_date">{{ album.album_release_date }}</p>
+                            <div class="like-button">
+                                <img onclick="likeAlbum(this)" src="{% static '/image/heart_icon1.png' %}" alt="Liked">
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            <button class="back">←</button>
+            <button class="next">→</button>
+        </div>
+        <hr>
+        {% endfor %}
+        {% else %}
+        <div class="no_genre">
+            <h1>아직 선택하신 장르가 없습니다!</h1>
+        </div>
+        {% endif %}
+    </article>
+</div>
+{% endif %}
+
+<script src="{% static '/js/recommend.js' %}"></script>
+<script src="{% static '/js/test' %}"></script>
+{% endblock content %}

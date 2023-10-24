@@ -6,6 +6,6 @@ urlpatterns = [
     path('detail/<str:ab_id>/', views.detail, name='detail'),
     path('analysis/<str:song_id>/', views.analysis, name='analysis'),
     path('recommend/', views.recommend, name='recommend'),
-    # path('toggle-like-album/', views.toggle_like_album, name='toggle-like-album'),
-    
+    path('genre_albums/', views.recommend, name='genre_albums'),
+    path('music_recommend/', views.music_recommend, name='music_recommend'),
 ]

@@ -1,4 +1,17 @@
 <!-- footer -->
+{% load static %}
+<link rel="stylesheet" href="{% static '/css/footer.css' %}">
 <div id="footerBox">
-    <h3>footer</h3>
+    <div id="footer_info">
+        <h3>이용 약관</h3>
+        <h3>개인정보처리방침</h3>
+        <h3>이메일 : ssavi_info@google.com</h3>
+    </div>
+    <div id="logo">
+        <h3>이 페이지에서 제공되는 모든 정보는 Spotify에 권리가 있습니다.</h3>
+        <a id="logoBox" href="https://www.spotify.com/kr-ko/premium/">
+            <h2>All copyrights are reserved in </h2>
+            <img id="spotify_logo" src="{% static '/image/Spotify_logo.png' %}" alt="">
+        </a>
+    </div>
 </div>

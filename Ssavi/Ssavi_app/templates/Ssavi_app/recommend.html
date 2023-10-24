@@ -2,6 +2,9 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+<script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/recommend.css' %}">
+
 <nav class="menu">
     {% if user.is_authenticated %}
     <a href="{% url 'recommend' %}">장르별 음악</a>
@@ -16,28 +19,28 @@
     <article>
         {% if user_genre_list %}
         {% for user_genre in user_genre_list %}
-        <div>
+        <div class="recom-group">
             <h3>{{ user_genre|upper }}</h3>
-        <div class="recom_display">
-            {% for album in recom_albums %}
-            {% if album.album_genre == user_genre %}
-            <div class="recom_item">
-                <a href="{% url 'detail' %}" class="recom_img_box" onmouseover="displayAlbumInfo(this)">
-                    <img class="recom_img" src="{{ album.album_image }}" alt="" onmouseover="displayAlbumInfo(this)">
-                    <div class="album_info">
-                        <p class="album_name">{{ album.album_name }}</p>
-                        <p class="artist_name">{{ album.album_artist }}</p>
-                        <p class="release_date">{{ album.album_release_date }}</p>
-                        <div class="like-button">
-                            <img onclick="likeAlbum(this)" src="{% static '/image/heart_icon1.png' %}" alt="Liked">
+            <div class="recom_display">
+                {% for album in recom_albums %}
+                {% if album.album_genre == user_genre %}
+                <div class="recom_item">
+                    <a href="{% url 'detail' {{album.album_id}} %}" class="recom_img_box" onmouseover="displayAlbumInfo(this)">
+                        <img class="recom_img" src="{{ album.album_image }}" alt="" onmouseover="displayAlbumInfo(this)">
+                        <div class="album_info">
+                            <p class="album_name">{{ album.album_name }}</p>
+                            <p class="artist_name">{{ album.album_artist }}</p>
+                            <p class="release_date">{{ album.album_release_date }}</p>
+                            <div class="like-button">
+                                <img id="heart-icon" onclick="likeAlbum(this)" src="{% static '/image/heart_icon1.png' %}" alt="Liked">
+                            </div>
                         </div>
-                    </div>
-                </a>
+                    </a>
+                </div>
+                {% endif %}
+                {% endfor %}
+                <hr>
             </div>
-            {% endif %}
-            {% endfor %}
-            <hr>
-        </div>
             <button class="back">＜</button>
             <button class="next">＞</button>
         </div>

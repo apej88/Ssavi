@@ -2,51 +2,119 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+
+<script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+<link rel="stylesheet" href="{% static '/css/index.css' %}">
 <nav class="menu">
-    <a href="{% url 'recommend' %}">장르별 음악</a>
-    <a href="{% url 'index' %}">최신 음악</a>
+    {% if user.is_authenticated %}
+    <a href="{% url 'genre_albums' %}">장르별 음악</a>
+    <a href="{% url 'index' %}">최신음악</a>
     <a href="#">음악 추천 받기</a>
+    {% else %}
+    <a href="{% url 'genre_albums' %}">장르별 음악</a>
+    <a href="{% url 'index' %}">최신음악</a>
+    {% endif %}
 </nav>
+
 <div id="indexBox">
     <article>
         <div id="album_box">
-            <table id="album_result">
-                <tr>
-                    <td>
-                        <a href="{% url 'detail' '01dPJcwyht77brL4JQiR8R' %}"><img src="{% static '/image/post1.jpg' %}" alt=""></a>
-                    </td>
-                    <td>
-                        <a href="{% url 'detail' '5V8n6fqyAPxvFTibPhQVcp' %}"><img src="{% static '/image/post1.jpg' %}" alt=""></a>
-                    </td>
-                    <td>
-                        <a href=""><img src="{% static '/image/post1.jpg' %}" alt=""></a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <a href=""><img src="{% static '/image/post1.jpg' %}" alt=""></a>
-                    </td>
-                    <td>
-                        <a href=""><img src="{% static '/image/post1.jpg' %}" alt=""></a>
-                    </td>
-                    <td>
-                        <a href=""><img src="{% static '/image/post1.jpg' %}" alt=""></a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <a href=""><img src="{% static '/image/post1.jpg' %}" alt=""></a>
-                    </td>
-                    <td>
-                        <a href=""><img src="{% static '/image/post1.jpg' %}" alt=""></a>
-                    </td>
-                    <td>
-                        <a href=""><img src="{% static '/image/post1.jpg' %}" alt=""></a>
-                    </td>
-                </tr>
-                <tr><th>최신음악</th></tr>
-            </table>
+            <div id="album_result">
+                {% for album in albums %}
+                <div class="album">
+                    <a href="{% url 'detail' album.album_id %}" onmouseover="displayAlbumInfo(this)">
+                        <img src="{{ album.album_image }}" alt="{{ album.album_name }}" class="album_img" onmouseover="displayAlbumInfo(this)">
+                        <div class="album_info">
+                            <p class="album_name">{{ album.album_name }}</p>
+                            <p class="artist_name">{{ album.album_artist }}</p>
+                            <p class="release_date">{{ album.album_release_date }}</p>
+                            <div class="like-button">
+                                <img id="heart-icon" onclick="likeAlbum(this)" src="{% static '/image/heart_icon1.png' %}" alt="Liked">
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% if forloop.counter|divisibleby:3 %}
+                <div class="clear"></div>
+                {% endif %}
+                {% endfor %}
+                <div class="pagination">
+                    <span class="step-links">
+                        {% if albums.has_previous %}
+                            <a href="?page=1">처음</a>
+                            <a href="?page={{ albums.previous_page_number }}">이전</a>
+                        {% endif %}
+                        
+                        {% for i in albums.paginator.page_range %}
+                        {% if i >= albums.number|add:"-3" and i <= albums.number|add:"3" %}
+                            {% if albums.number == i %}
+                                <span class="current-page">
+                                페이지 {{ i }} / {{ albums.paginator.num_pages }}
+                                </span>
+                            {% else %}
+                            <a href="?page={{ i }}">{{ i }}</a>
+                            {% endif %}
+                        {% endif %}
+                        {% endfor %}
+                      
+                        
+                        {% if albums.has_next %}
+                            <a href="?page={{ albums.next_page_number }}">다음</a>
+                            <a href="?page={{ albums.paginator.num_pages }}">마지막</a>
+                        {% endif %}
+                    <!-- 모든 페이지를 나열 -->
+                    </span>
+                </div>
+            </div>
         </div>
     </article>
 </div>
+
+<script>
+    function displayAlbumInfo(albumElement) {
+        var albumInfo = albumElement.querySelector('.album_info');
+        if (albumInfo) {
+            albumInfo.style.display = 'block';
+        }
+    }
+    
+    function hideAlbumInfo(albumElement) {
+        var albumInfo = albumElement.querySelector('.album_info');
+        if (albumInfo) {
+            albumInfo.style.display = 'none';
+        }
+    }
+    
+    function likeAlbum(heartIcon) {
+        alert('좋아요가 클릭되었습니다.');
+        var currentImageSrc = heartIcon.src;
+    
+        // 현재 이미지의 src 속성에서 파일 이름을 추출
+        var currentImageFileName = currentImageSrc.substr(currentImageSrc.lastIndexOf('/') + 1);
+        
+        if (currentImageFileName === 'heart_icon1.png') {
+            // 현재 이미지가 heart_icon1.png인 경우, 이미지를 heart_icon2.png로 변경
+            heartIcon.src = '{% static "/image/heart_icon2.png" %}';
+        } else {
+            // 그렇지 않으면 이미지를 heart_icon1.png로 변경
+            heartIcon.src = '{% static "/image/heart_icon1.png" %}';
+        }
+        
+        // 이미지를 변경한 후 이벤트의 전파를 중단시키고 기본 동작을 막습니다. 아니면 계속 이미지 바뀌어버림..
+        event.preventDefault();
+        event.stopPropagation();
+    }
+    
+    var albums = document.querySelectorAll('.album');
+
+    albums.forEach(function(albumElement) {
+        albumElement.addEventListener('mouseover', function() {
+            displayAlbumInfo(albumElement);
+        });
+
+        albumElement.addEventListener('mouseout', function() {
+            hideAlbumInfo(albumElement);
+        });
+      });
+  </script>
 {% endblock content %}

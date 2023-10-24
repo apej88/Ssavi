@@ -1,16 +1,12 @@
 /* 전체 박스 */
 #detailBox{
     margin: 0 auto;
-    /* border: 1px solid black; */
     margin-top: 20px;
 }
 
 /* 앨범 정보 */
 #album_box {
     display: block;
-}
-
-#album_title {
     width: 65%;
     margin: 0 auto;
 }
@@ -21,14 +17,11 @@
 
 #album_detail {
     border-collapse: collapse;
-    margin: 0 auto;
-    width: 65%;
     margin-top: 20px;
     margin-bottom: 30px;
 }
 
 #album_detail td {
-    /* padding: 8px; */
     border: 1px solid #ddd;
     text-align: left;
 }
@@ -53,7 +46,6 @@
 
 #album_detail .description-cell p{
     font-size: 15px;
-    /* margin-bottom: 30px; */
     margin-left: 10px;
 }
 
@@ -143,12 +135,12 @@
     width: 15%;
 }
 
-#song_no, #album_song_artist, #album_song_playlist, #album_song_thumbs, #album_song_analysis {
+#song_no, #album_song_playlist, #album_song_thumbs, #album_song_analysis {
     width: 10%;
 }
 
 #album_song_preview {
-    width: 35%;
+    width: 45%;
 }
 
 #album_song_box {

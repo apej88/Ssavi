@@ -1,5 +1,5 @@
 from django.db import IntegrityError
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import JsonResponse
 from django.contrib.auth import login, logout
@@ -61,3 +61,10 @@ def id_check(request):
 
     else:
         return JsonResponse({'error':'올바르지 않은 형식입니다'})
+
+# def user_update(request, password):
+#     user = 
+#     user_form = get_object_or_404(UsersAppUser, pk=username)
+#     if:
+#     user_info = get_object_or_404(UsersAppUser, )
+#     else:

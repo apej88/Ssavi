@@ -1,20 +1,28 @@
 from django.db.models import Avg
 from django.http import JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
+from .models import *
+# from mysqlsearcher import *
+from django.template.loader import render_to_string
+from django.core import serializers
+from django.core.paginator import Paginator
+import spotipy
 
+from spotipy.oauth2 import SpotifyClientCredentials
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
 from .models import UsersAppUser
 
-from .models import Albums, LikedAlbum, Tracks, AudioFeatures, Kpop, Jpop, Jazz, Latin, Alternative, Hiphop, Rnb, Rock, Indiepop
+# from .models import Albums, LikedAlbum, Tracks, AudioFeatures, Kpop, Jpop, Jazz, Latin, Alternative, Hiphop, Rnb, Rock, Indiepop
 
 client_credentials_manager = SpotifyClientCredentials(client_id='c0ef6b3167de4affb312e7fc7366abb4', client_secret='86babd771d3c4098b90fc70ed221cd60')
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 # Create your views here.
 def index(request):
-    return render(request, 'Ssavi_app/index.html')
+    albums = Albums.objects.all()
+    return render(request, 'Ssavi_app/index.html', {'albums': albums})
 
 def recommend(request):
     # 로그인하지 않은 채 그냥 들어간다면 장르는 except로 고정된다.
@@ -71,32 +79,7 @@ def get_albuminfo():
         album_infos.append(album_info)
 
     return album_infos
-
-def album_list(request):
-    albums = Albums.objects.all()[:12]
-    return render(request, 'Ssavi_app/index.html', {'albums': albums})
-
-# from django.views.decorators.csrf import csrf_exempt
-# @csrf_exempt
-# def toggle_like_album(request):
-#     if request.method == 'POST':
-#         # 클라이언트에서 POST 요청으로 전송한 데이터 가져오기
-#         album_id = request.POST.get('albumId')
-#         user_id = request.POST.get('userId')
-#         is_liked = request.POST.get('isLiked')
-
-#         # 데이터베이스에서 해당 레코드를 찾거나 생성
-#         liked_album, created = LikedAlbum.objects.get_or_create(album_id=album_id, user_id=user_id)
-
-#         if is_liked == 'true':
-#             liked_album.save()  # 좋아요 추가
-#         else:
-#             liked_album.delete()  # 좋아요 삭제
-
-#         return JsonResponse({'message': 'Success'})
-#     else:
-#         return JsonResponse({'message': 'Invalid request method'}, status=400)
-    
+ 
 def detail(request, ab_id):
     album = get_object_or_404(Albums, pk=ab_id)
     songs = sp.album_tracks(album_id=ab_id)['items']
@@ -112,22 +95,6 @@ def detail(request, ab_id):
 
     # 장르가 문자열로 되어있기 때문에 문자 제외한 부분 제거하고 리스트로 저장.
     genres = album.album_genre.strip('[]').replace("'", "").split(', ')
-
-    if request.method == 'POST':
-        # 클라이언트에서 POST 요청으로 전송한 데이터 가져오기
-        album_id = request.POST.get('albumId')
-        user_id = request.POST.get('userId')
-        is_liked = request.POST.get('isLiked')
-
-        # 데이터베이스에서 해당 레코드를 찾거나 생성
-        liked_album, created = LikedAlbum.objects.get_or_create(album_id=album_id, user_id=user_id)
-
-        if is_liked == 'true':
-            liked_album.save()  # 좋아요 추가
-        else:
-            liked_album.delete()  # 좋아요 삭제
-
-        return JsonResponse({'message': 'Success'})
     
     # 앨범 데이터와 노래 데이터, 장르 반환
     context = {
@@ -271,19 +238,6 @@ def analysis(request, song_id):
             artists_str = ', '.join(artists)
             recommendation_track_artists.append(artists_str)
             recommendation_tracks_preview_urls.append(track['preview_url'])
-    
-    # # 데이터베이스에 곡이 없으면 저장
-    # for track_id, track_name, track_preview, album_id in zip(recommendation_tracks, recommendation_track_names, recommendation_tracks_preview_urls, recommendation_album_id):
-    #     existing_track = Track.objects.filter(track_id=track_id).first()
-
-    #     if not existing_track:
-    #         new_track = Track(
-    #             track_id=track_id,
-    #             track_name=track_name,
-    #             track_preview=track_preview,
-    #             album=album_id
-    #         )
-    #         new_track.save()
 
     
     for i in range(0, 5):
@@ -338,6 +292,20 @@ def analysis(request, song_id):
 
     return render(request, 'Ssavi_app/analysis.html', context)
 
+# 태주님 index 페이지에서 기능할 함수
+def album_list(request):
+    page = int(request.GET.get('page', 1))
+    albums_per_page = 15 # 페이지당 앨범 수
+    albums = Albums.objects.all()
+    paginator = Paginator(albums, albums_per_page)
+    page_albums = paginator.get_page(page)
+    return render(request, 'Ssavi_app/index.html', {'albums': page_albums})
 
-def recommend(request):
-    return render(request, 'Ssavi_app/recommend.html')
+
+def music_recommend(request):
+    tracks = Tracks.objects.all()
+
+    context = {
+        'tracks': tracks,
+    }
+    return render(request, 'Ssavi_app/music_recommend.html', context)

@@ -35,7 +35,7 @@
                                 {% endfor %}
                         </div>
                         <div class='album_like'>
-                            <button class="like_btn" id="likeButton" data-album-id="{{album.album_id}}" data-user-id="abcd">
+                            <button class="like_btn">
                                 <img id="likeImage" src="{% static 'image/like.png' %}">
                             </button>
                         </div>
@@ -54,7 +54,6 @@
                     <tr>
                         <th id='album_song_no'>번호</th>
                         <th id='album_song_name'>곡명</th>
-                        <th id='album_song_artist'>아티스트</th>
                         <th id='album_song_preview'>미리듣기</th>
                         <th id='album_song_playlist'>담기</th>
                         <th id='album_song_thumbs'>좋아요</th>
@@ -64,7 +63,6 @@
                         <tr>
                             <td>{{ forloop.counter }}</td>
                             <td>{{ song.song_name }}</td>
-                            <td>{{ song.song_artist }}</td>
                             <td>
                                 {% if song.song_preview_url %}
                                     <audio controls class="preview">
