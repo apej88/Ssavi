@@ -2,6 +2,10 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/analysis.css' %}">
+<script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+
 <nav class="menu">
     <a href="{% url 'recommend' %}">장르별 음악</a>
     <a href="{% url 'index' %}">최신 음악</a>
@@ -16,7 +20,9 @@
             </div>
             <div class="current_list">
                 <h3>{{ current_song.1 }} - {{ current_song.2 }}</h3>
-                <button class='like_btn'><img class='like_image' src="{% static 'image/like.png' %}"></button>
+                <div class="like-button">
+                    <img id="thumb-icon" onclick="likeTrack(this, '{{ current_song.4 }}')" data-track-id="{{ current_song.4 }}" src="{% static '/image/Thumbs_up.png' %}" alt="Liked">
+                </div>
             </div>
             <div class="current_preview">
                     <audio controls>
@@ -143,4 +149,64 @@
         </div>
     </div>
 </div>
+
+<script>
+        // 페이지가 로드될 때 실행될 함수
+    
+    // 'liketrack' 변수는 Python에서 전달된 변수로 JavaScript에서 사용 가능    
+    var liketrack = {{ liketrack|safe }};
+
+    // 페이지가 로드될 때 실행될 함수
+    window.addEventListener('load', function() {
+        var thumbIcons = document.querySelectorAll("#thumb-icon");
+
+        thumbIcons.forEach(function(thumbIcon){
+
+        var trackId = thumbIcon.getAttribute("data-track-id");
+
+        if (liketrack.includes(trackId)) {
+            thumbIcon.src = "{% static '/image/Thumbs_up_fill.png' %}";
+        } else {
+            thumbIcon.src = "{% static '/image/Thumbs_up.png' %}";
+        }
+
+        });
+    });
+
+    function likeTrack(thumbIcon, trackId) {
+        var currentImageSrc = thumbIcon.src;
+        var currentImageFileName = currentImageSrc.substr(currentImageSrc.lastIndexOf('/') + 1);
+        
+        if (currentImageFileName === 'Thumbs_up.png') {
+            thumbIcon.src = '{% static "/image/Thumbs_up_fill.png" %}';
+            like_Track(trackId, true);
+        } else {
+            thumbIcon.src = '{% static "/image/Thumbs_up.png" %}';
+            like_Track(trackId, false);
+        }
+        
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    function like_Track(trackId, isLiked) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", '/like_track/', true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+        
+        xhr.onreadystatechange = function() {
+            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                console.log(this.responseText);
+            }
+        }
+        
+        if ({{ request.user.is_authenticated|lower }}) {
+            xhr.send("id={{ request.user.id|default:'null' }}&track_id=" + trackId);
+        } else {
+            alert('로그인이 필요합니다.');
+        }
+    }
+
+</script>
 {% endblock content %}

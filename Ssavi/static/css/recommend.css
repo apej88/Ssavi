@@ -91,13 +91,13 @@ nav.menu a {
 
   }
 
-.like-button img {
+/* .like-button img {
     position: absolute;
     width: 40px;
     z-index: 3;
     bottom: 10px;
     right: 10px;
-  }
+} */
 
 .back {
     font-size: large;

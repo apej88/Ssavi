@@ -1,3 +1,24 @@
+.menu a {
+    margin-left: 20px;
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+}
+  
+nav.menu {
+    margin: 20px 0 20px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+  
+nav.menu a {
+    text-decoration: none;
+    color: #333;
+    margin: 0 20px;
+    font-weight: bold;
+}
+
 /* 전체 박스 */
 #detailBox{
     margin: 0 auto;
@@ -37,11 +58,27 @@
 }
 
 #album_detail .image-cell {
-    width: 30%; /* 이미지 셀의 너비 */
+    width: 25%; /* 이미지 셀의 너비 */
 }
 
 #album_detail .description-cell {
-    width: 70%; /* 설명 셀의 너비 */
+    width: 75%; /* 설명 셀의 너비 */
+}
+
+#album_detail .description-cell .album_name {
+    display: block;
+}
+
+#album_detail .description-cell .detail_album {
+    font-size: 20px;
+    color: gray;
+    margin-left: 20px;
+    margin-bottom: 0;
+}
+
+#album_detail .description-cell .detail_album_name {
+    margin-top: 0;
+    font-size: 45px;
 }
 
 #album_detail .description-cell p{
@@ -57,9 +94,9 @@
 
 #album_detail .description-cell .album_artist{
     margin-top: 0;
-    margin-bottom: 60px;
+    margin-bottom: 50px;
     font-size: 20px;
-    color: skyblue;
+    color: gray;
 }
 
 #album_detail .description-cell .album_detail{
@@ -81,18 +118,10 @@
     max-height: 20px;
 }
 
-#album_detail .description-cell .album_like button {
-    background-color: transparent;
-    color: #fff;
-    border: none;
+#album_detail .description-cell .like-button {
+    /* position: relative; */
+    width: 30px;
     margin-left: 20px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: opacity 0.3s; /* 투명도 변화를 부드럽게 만들기 위한 트랜지션 설정 */
-}
-
-#album_detail .description-cell .album_like button:hover {
-    opacity: 0.5;
 }
 
 /* 앨범 안의 수록곡 정보 */
@@ -167,14 +196,20 @@
     padding: 5px 10px;
     cursor: pointer;
     font-size: 14px;
+}
+
+#album_songs img {
+    max-width: 20px;
+    max-height: 20px;
+    margin: 0 auto;
     transition: opacity 0.3s; /* 투명도 변화를 부드럽게 만들기 위한 트랜지션 설정 */
 }
 
-#album_songs button img {
-    max-width: 20px;
-    max-height: 20px;
+#album_songs img:hover, .like-button:hover {
+    opacity: 0.5;
 }
 
-#album_songs button:hover {
-    opacity: 0.5;
+.like-button {
+    cursor: pointer;
+    transition: opacity 0.3s;
 }

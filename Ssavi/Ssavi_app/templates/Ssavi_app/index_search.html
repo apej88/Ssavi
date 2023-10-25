@@ -18,7 +18,7 @@
             <div id="album_result">
                 {% for album in albums %}
                 <div class="album">
-                    <a href="{% url 'detail' album.album_id %}" onmouseover="displayAlbumInfo(this)">
+                    <a href="" onmouseover="displayAlbumInfo(this)">
                         <img src="{{ album.album_image }}" alt="{{ album.album_name }}" class="album_img" onmouseover="displayAlbumInfo(this)">
                         <div class="album_info">
                             <p class="album_name">{{ album.album_name }}</p>
@@ -34,31 +34,30 @@
                 <div class="clear"></div>
                 {% endif %}
                 {% endfor %}
+                    <!-- 페이지네이션 -->
                 <div class="pagination">
                     <span class="step-links">
-                        {% if albums.has_previous %}
-                            <a href="?page=1">처음</a>
-                            <a href="?page={{ albums.previous_page_number }}">이전</a>
+                    {% if albums.has_previous %}
+                        <a href="?page=1">처음</a>
+                        <a href="?page={{ albums.previous_page_number }}">이전</a>
+                    {% endif %}
+
+                    {% for i in albums.paginator.page_range %}
+                    {% if i >= albums.number|add:"-3" and i <= albums.number|add:"3" %}
+                        {% if albums.number == i %}
+                            <span class="current-page">
+                            페이지 {{ i }} / {{ albums.paginator.num_pages }}
+                            </span>
+                        {% else %}
+                        <a href="?page={{ i }}">{{ i }}</a>
                         {% endif %}
-                        
-                        {% for i in albums.paginator.page_range %}
-                        {% if i >= albums.number|add:"-3" and i <= albums.number|add:"3" %}
-                            {% if albums.number == i %}
-                                <span class="current-page">
-                                페이지 {{ i }} / {{ albums.paginator.num_pages }}
-                                </span>
-                            {% else %}
-                            <a href="?page={{ i }}">{{ i }}</a>
-                            {% endif %}
-                        {% endif %}
-                        {% endfor %}
-                      
-                        
-                        {% if albums.has_next %}
-                            <a href="?page={{ albums.next_page_number }}">다음</a>
-                            <a href="?page={{ albums.paginator.num_pages }}">마지막</a>
-                        {% endif %}
-                    <!-- 모든 페이지를 나열 -->
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if albums.has_next %}
+                        <a href="?page={{ albums.next_page_number }}">다음</a>
+                        <a href="?page={{ albums.paginator.num_pages }}">마지막</a>
+                    {% endif %}
                     </span>
                 </div>
             </div>
