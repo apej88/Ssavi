@@ -69,14 +69,9 @@
                             <td>{{ forloop.counter }}</td>
                             <td>{{ song.song_name }}</td>
                             <td>
-                                {% if song.song_preview_url %}
-                                    <audio controls class="preview">
-                                        <source src="{{ song.song_preview_url }}" type="audio/mpeg">
-                                        브라우저가 오디오를 지원하지 않습니다.
-                                    </audio>
-                                {% else %}
-                                    미리듣기 없음
-                                {% endif %}
+                                <audio controls class="preview">
+                                    <source src="{{ song.song_preview_url }}" type="audio/mpeg">
+                                </audio>
                             </td>
                             <td><a href="#"><button><img src="{% static 'image/add_playlist.png' %}"></button></a></td>
                             <td>

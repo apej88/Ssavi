@@ -30,14 +30,9 @@
                         </div>
                     <td>{{track.track_name}}</td>
                     <td>
-                        {% if track.track_preview %}
                             <audio controls class="preview">
                                 <source src="{{ track.track_preview }}" type="audio/mpeg">
-                                브라우저가 오디오를 지원하지 않습니다.
                             </audio>
-                        {% else %}
-                            미리듣기 없음
-                        {% endif %}
                     </td>
                     <td><a href="#"><button><img src="{% static 'image/add_playlist.png' %}"></button></a></td>
                     <td>
