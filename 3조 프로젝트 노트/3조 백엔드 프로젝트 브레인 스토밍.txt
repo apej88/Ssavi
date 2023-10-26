@@ -69,3 +69,30 @@ album_name : album_result['items'][0]['name']
 album_artist : album_result['items'][0]['artists'][0]['name']
 album_image : album_result['items'][0]['images']
 album_release_date : album_result['items'][0]['release_date']
+
+
+
+데이터 입출력 방식 생각정리
+
+처음 생각한 것 : 페이지를 요청할 때마다 API에서 검색을 돌려 얻은 정보를 페이지에 그냥 출력
+
+수정한 구조 : 페이지를 요청하면 API에서 검색된 결과를 DB에 저장한 뒤 출력. => 페이지를 요청할 때마다 API가 검색 함수 호출하고 DB에 저장해야 하는가? X 안된다. 중복값이 다른 id로 들어가 구분이 힘들어지게 된다.
+
+
+
+프로젝트 시작 전 데이터 전처리 작업
+
+1. 크롤링으로 우선 앨범만 긁어와 DB에 넣는다. 1000개든 2000개든 간에...
+2. 마찬가지로 앨범 id로 들어가 track 정보를 긁어와 track DB에 추가한다.
+
+그럼 album과 track 테이블에 데이터가 찬다.
+
+audio_feature 테이블의 존재 의미 : 유저가 플레이리스트에 올렸거나 비교하고 싶은 곡의 그래프 데이터를 확인하려 할 때, 그 곡의 audio_feature 정보들이 테이블에 올라간다.
+
+장르별 테이블 : 마찬가지로 해당 장르의 앨범들을 크롤링해 넣는다. 비교를 위해서.
+
+
+
+앨범 크롤링 시작
+
+Jazz, Alternative, J-POP

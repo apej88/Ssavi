@@ -1,0 +1,8 @@
+CREATE TABLE `Liked_Track` (
+	`LT_no` int primary key not null,
+	`track_id` varchar(50) NOT NULL,
+    `id` bigint
+);
+
+ALTER TABLE `Liked_Track` ADD FOREIGN KEY (`track_id`) REFERENCES `Tracks` (`track_id`);
+ALTER TABLE `Liked_Track` ADD FOREIGN KEY (`id`) REFERENCES `users_app_user` (`id`);

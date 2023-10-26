@@ -7,9 +7,11 @@
 <script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
 
 <nav class="menu">
-    <a href="{% url 'recommend' %}">장르별 음악</a>
-    <a href="{% url 'index' %}">최신 음악</a>
-    <a href="#">음악 추천 받기</a>
+    <a href="{% url 'genre_albums' %}">장르별 음악</a>
+    <a href="{% url 'index' %}">최신음악</a>
+    {% if user.is_authenticated %}
+    <a href="{% url 'music_recommend' %}">음악 추천 받기</a>
+    {% endif %}
 </nav>
 <div id="detailBox">
     <div id='album_box'>

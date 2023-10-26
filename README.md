@@ -18,6 +18,8 @@ use ssavi_db;
 ```
 까지만 실행한다.
 
+db_settings.py에서 반드시 본인이 사용하는 sql 비밀번호로 설정하여야만 한다.
+
 이후 venv 환경으로 들어가
 
 ```cmd

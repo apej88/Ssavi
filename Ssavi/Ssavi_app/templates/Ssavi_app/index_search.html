@@ -6,7 +6,7 @@
 <script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
 <link rel="stylesheet" href="{% static '/css/index.css' %}">
 <nav class="menu">
-    <a href="{% url 'recommend' %}">장르별 음악</a>
+    <a href="{% url 'genre_albums' %}">장르별 음악</a>
     <a href="{% url 'index' %}">최신음악</a>
     <a href="{% url 'music_recommend' %}">음악 추천 받기</a>
 </nav>
@@ -18,7 +18,7 @@
             <div id="album_result">
                 {% for album in albums %}
                 <div class="album">
-                    <a href="" onmouseover="displayAlbumInfo(this)">
+                    <a href="{% url 'detail' album.album_id %}" onmouseover="displayAlbumInfo(this)">
                         <img src="{{ album.album_image }}" alt="{{ album.album_name }}" class="album_img" onmouseover="displayAlbumInfo(this)">
                         <div class="album_info">
                             <p class="album_name">{{ album.album_name }}</p>

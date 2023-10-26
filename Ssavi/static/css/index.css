@@ -20,6 +20,7 @@ nav.menu a {
 }
 
 
+
 #indexBox {
   display: flex;
   align-items: center;
@@ -28,88 +29,96 @@ nav.menu a {
   border: 1px solid black;
 }
 
-/* 스타일을 조절하세요 */
-.album {
-  position: relative; /* 추가: 상위 div에 대한 상대 위치 설정 */
-  float: left;
-  margin: 10px;
-  width: 200px; /* 앨범 카드의 너비를 조절하세요 */
-}
+ /* 스타일을 조절하세요 */
+ .album {
+    position: relative; /* 추가: 상위 div에 대한 상대 위치 설정 */
+    float: left;
+    margin: 10px;
+    width: 200px; /* 앨범 카드의 너비를 조절하세요 */
+    height: 200px;
+  }
 
-.album_img {
-  width: 100%;
-  height: auto;
-}
+  .album_img {
+    width: 200px;
+    height: 200px;
+  }
 
-.album_info {
-  display: none; /* 기본적으로 숨김 */
-  position: absolute; /* 추가: 상위 div를 기준으로 절대 위치 설정 */
-  background: rgba(0, 0, 0, 0.7);
-  color: white;
-  text-align: center;
-  bottom: 0;
-  width: 100%; /* 이미지와 동일한 너비 */
-  height: 100%; /* 이미지와 동일한 높이 */
+  .album_info {
+    display: none; /* 기본적으로 숨김 */
+    position: absolute; /* 추가: 상위 div를 기준으로 절대 위치 설정 */
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    text-align: center;
+    bottom: 0;
+    width: 100%; /* 이미지와 동일한 너비 */
+    height: 100%; /* 이미지와 동일한 높이 */
+    filter: blur(3px) grayscale(100%);
+    transition: 1.5s ease;
+    opacity: 0;
+  }
 
-
-}
+  .album_info:hover {
+    filter: blur(0) grayscale(0);
+    transition: opacity 0.7s ease;
+    opacity: 1;
+  }
 
 .album_info p{
   margin-top: 20px;
 
-}
+  }
+  
+  #heart-icon {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    margin-left: 10px;
+    margin-top: 10px;
+    right: 5px;
+    bottom: 5px;
+    color: white;
+    background: none;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
 
-#heart-icon {
-  position: absolute;
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
-  margin-left: 10px;
-  margin-top: 10px;
-  right: 5px;
-  bottom: 5px;
-  color: white;
-  background: none;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
-}
+  .clear {
+    clear: both;
+  }
 
-.clear {
-  clear: both;
-}
-
-.pagination {
-  text-align: center;
-  margin: 20px 0;
+  .pagination {
+    text-align: center;
+    margin: 20px 0;
 }
 
 .step-links {
-  display: inline-block;
-  padding: 0;
+    display: inline-block;
+    padding: 0;
 }
 
 .step-links a {
-  color: #000;
-  padding: 10px;
-  border: 1px solid #ddd;
-  text-decoration: none;
+    color: #000;
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-decoration: none;
 }
 
 .step-links a:hover {
-  background-color: #ddd;
+    background-color: #ddd;
 }
 
 .step-links .current-page {
-  color: #fff;
-  background-color: #007bff;
-  padding: 10px;
-  border: 1px solid #007bff;
+    color: #fff;
+    background-color: #007bff;
+    padding: 10px;
+    border: 1px solid #007bff;
 }
 
 .heart-button {
-background: none;
-border: none;
-font-size: 24px;
-cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
 }

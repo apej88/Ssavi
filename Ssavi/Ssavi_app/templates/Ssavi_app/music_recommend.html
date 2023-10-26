@@ -7,7 +7,7 @@
 <link rel="stylesheet" type="text/css" href="{% static 'css/music_recommend.css' %}">
 
 <nav class="menu">
-    <a href="{% url 'recommend' %}">장르별 음악</a>
+    <a href="{% url 'genre_albums' %}">장르별 음악</a>
     <a href="{% url 'index' %}">최신음악</a>
     <a href="{% url 'music_recommend' %}">음악 추천 받기</a>
 </nav>
@@ -19,7 +19,7 @@
         <ul>
             {% for track in tracks %}
             <li class='track_li'>
-                <img src="{{ track.album.album_image }}" alt="{{ track.album.album_artist }} Album Image">
+                <img class="recom_track_img" src="{{ track.album.album_image }}" alt="{{ track.album.album_artist }} Album Image">
                 <div class="container">
                     <h2>곡명 : {{ track.track_name }}</h2>
                     <p>아티스트 : {{ track.album.album_artist }}</p>
@@ -30,7 +30,7 @@
                     "error"
                 </audio>
                 <div class="like-button">
-                    <img id="heart-icon" onclick="likeAlbum(this, '{{ track.track_id }}')" data-track-id="{{ track.track_id }}" src="{% static '/image/Thumbs_up.png' %}" alt="Liked">
+                    <img id="thumb-icon" onclick="likeAlbum(this, '{{ track.track_id }}')" data-track-id="{{ track.track_id }}" src="{% static '/image/Thumbs_up.png' %}" alt="Liked">
                 </div>
             </li>
             {% endfor %}
@@ -47,7 +47,7 @@
     
     // 페이지가 로드될 때 실행될 함수
     window.addEventListener('load', function() {
-        var heartIcons = document.querySelectorAll("#heart-icon");
+        var heartIcons = document.querySelectorAll("#thumb-icon");
 
         heartIcons.forEach(function(heartIcon) {
            

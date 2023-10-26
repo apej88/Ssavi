@@ -185,18 +185,9 @@ class LikedAlbum(models.Model):
         db_table = 'liked_album'
 
 class LikedTrack(models.Model):
-    lt_no = models.IntegerField(db_column='LT_no', primary_key=True)  # Field name made lowercase.
+    lt_no = models.AutoField(db_column='LT_no', primary_key=True)  # Field name made lowercase.
     track = models.ForeignKey('Tracks', models.DO_NOTHING)
-    id = models.ForeignKey('UsersAppUser', models.DO_NOTHING, db_column='id', blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'liked_track'
-
-class LikedTrack(models.Model):
-    lt_no = models.IntegerField(db_column='LT_no', primary_key=True)  # Field name made lowercase.
-    track = models.ForeignKey('Tracks', models.DO_NOTHING)
-    id = models.ForeignKey('UsersAppUser', models.DO_NOTHING, db_column='id', blank=True, null=True)
+    id = models.ForeignKey('UsersAppUser', models.DO_NOTHING, db_column='id', blank=True, null=True)        
 
     class Meta:
         managed = False

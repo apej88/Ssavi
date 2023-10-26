@@ -1,36 +1,45 @@
-from django.db.models import Avg
 from django.http import JsonResponse
-from django.shortcuts import redirect, render, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 from .models import *
-# from mysqlsearcher import *
-from django.template.loader import render_to_string
-from django.core import serializers
 from django.core.paginator import Paginator
+from django.db.models import Q 
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
+from mysqlsearcher import *
+from django.db.models import Avg
+from django.shortcuts import render, get_object_or_404
+
 import spotipy
-
-from spotipy.oauth2 import SpotifyClientCredentials
-import spotipy
+from mySpotipyID import cid, csecret
 from spotipy.oauth2 import SpotifyClientCredentials
 
-from .models import UsersAppUser
-
-# from .models import Albums, LikedAlbum, Tracks, AudioFeatures, Kpop, Jpop, Jazz, Latin, Alternative, Hiphop, Rnb, Rock, Indiepop
-
-client_credentials_manager = SpotifyClientCredentials(client_id='c0ef6b3167de4affb312e7fc7366abb4', client_secret='86babd771d3c4098b90fc70ed221cd60')
+client_credentials_manager = SpotifyClientCredentials(client_id='d95055726cab4d388a7eca1c84f4d7f9', client_secret='e7879ea497be4485b92964f9d6a2f1be')
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 # Create your views here.
 def index(request):
-    albums = Albums.objects.all()
-    return render(request, 'Ssavi_app/index.html', {'albums': albums})
+    return render(request, 'Ssavi_app/index.html')
 
 def recommend(request):
     # 로그인하지 않은 채 그냥 들어간다면 장르는 except로 고정된다.
     # 유저의 인증정보를 조회하여 id값을 보낸다.
-    # 
+    recom_albums = Albums.objects.all()
+    likealbum = []
+
     if request.user.is_authenticated:
         user_id = request.user.id
+        for i in recom_albums:
+            if LikedAlbum.objects.filter(id=user_id, album_id=i.album_id).exists():
+                likealbum.append(i.album_id)
+
+    context = {
+        'albums': recom_albums,
+        'likealbum' : likealbum
+    }
+
         # user_genre_list = DBsearch.selectUserGenre(str(user_id))
+    if request.user.is_authenticated:
+        user_id = request.user.id
 
         # user_id 정수를 받아오면 users_app_user에서 user_genre 검색
         try:
@@ -42,25 +51,57 @@ def recommend(request):
         except UsersAppUser.DoesNotExist:
             user_genre_list = []
 
-        # filter_query = Q()
-        # for genre in user_genre_list:
-        #     filter_query |= Q(album_genre__contains=genre)
-
-        # recom_albums = Albums.objects.filter(filter_query)
-        recom_albums = Albums.objects.all()
-
-        return render(request, 'Ssavi_app/genre_music.html', {'recom_albums':recom_albums, 'user_genre_list':user_genre_list})
+        return render(request, 'Ssavi_app/genre_music.html', {'recom_albums':recom_albums, 'user_genre_list':user_genre_list, 'context':context})
 
     else:
-        user_genre_list = ['jazz', 'k-pop', 'J-pop', 'R&b']
-        recom_albums = Albums.objects.all()
-    return render(request, 'Ssavi_app/genre_music.html', {'recom_albums':recom_albums, 'user_genre_list':user_genre_list})
+        user_genre_list = ['jazz', 'k-pop', 'J-pop', 'R&B']
+    return render(request, 'Ssavi_app/genre_music.html', {'recom_albums':recom_albums, 'user_genre_list':user_genre_list, 'context':context})
 
- 
+def get_albuminfo():
+    search_result = sp.new_releases(country='KR', limit=9)
+    album_infos = []
+    album_image_urls = []
+
+    for re in search_result['albums']['items']:
+        album_image_urls.append(re['name'])
+        album_image_urls.append(re['artists'][0]['name'])
+        album_image_urls.append(re['release_date'])
+        for imagemedium in re['images']:
+            if imagemedium.get('height') == 300:
+                album_image_urls.append(imagemedium['url'])
+
+    for i in range(0, len(album_image_urls), 4):
+        album_info = {
+            'albumname': album_image_urls[i],
+            'artistname': album_image_urls[i+1],
+            'releasedate': album_image_urls[i+2],
+            'url': album_image_urls[i+3]
+        }
+        album_infos.append(album_info)
+
+    return album_infos
+
+def music_recommend(request):
+    tracks = Tracks.objects.all()
+    liketrack = []
+
+    if request.user.is_authenticated:
+        user_id = request.user.id
+        for i in tracks:
+            if LikedTrack.objects.filter(id=user_id, track_id=i.track_id).exists():
+                liketrack.append(i.track_id)
+
+    context = {
+        'tracks': tracks,
+        'liketrack' : liketrack
+    }
+
+    return render(request, 'Ssavi_app/music_recommend.html', context)
+
 def detail(request, ab_id):
     album = get_object_or_404(Albums, pk=ab_id)
     songs = sp.album_tracks(album_id=ab_id)['items']
-    songs_data = []  # 앨범 안의 노래들의 정보를 담을 리스트
+    songs_data = [] # 앨범 안의 노래들의 정보를 담을 리스트
     tracks = Tracks.objects.all()
     liketrack = []
 
@@ -85,6 +126,8 @@ def detail(request, ab_id):
         song['song_artist'] = songs[s]['artists'][0]['name']
         song['song_preview_url'] = songs[s]['preview_url']
         songs_data.append(song)  # 노래 정보를 리스트에 추가
+
+    
 
     # 장르가 문자열로 되어있기 때문에 문자 제외한 부분 제거하고 리스트로 저장.
     genres = album.album_genre.strip('[]').replace("'", "").split(', ')
@@ -123,37 +166,34 @@ def analysis(request, song_id):
     artist_id = track_info["artists"][0]["id"]
     artists_info = sp.artist(artist_id)
     artist_name = artists_info['name']
-    genre = artists_info["genres"][0]
-    
+
+    Album = get_object_or_404(Albums, pk=album_id)
+
+    genre = Album.album_genre
+
     current_song = [album_image_url, song_name, artist_name, Track.track_preview, song_id]
     
     # 각 장르마다 평균 audio feature를 구하기 위해 모델 오브젝트 불러옴
     if genre=='k-pop':
         genre_audio_feature_all = Kpop.objects.all()
-    elif 'alternative' in genre:
+    elif genre == 'alternative':
         genre_audio_feature_all = Alternative.objects.all()
-        genre = 'alternative'
-    elif 'indie pop' in genre:
+    elif genre == 'indie Pop':
         genre_audio_feature_all = Indiepop.objects.all()
-        genre = 'indie pop'
-    elif genre=='pop':
+    elif genre=='J-pop':
         genre_audio_feature_all = Jpop.objects.all()
-        genre = 'pop'
-    elif 'rock' in genre:
+    elif genre == 'rock':
         genre_audio_feature_all = Rock.objects.all()
-        genre = 'rock'
-    elif 'r&b' in genre:
+    elif genre == 'R&B':
         genre_audio_feature_all = Rnb.objects.all()
-        genre = 'r&b'
-    elif 'jazz' in genre:
+    elif genre == 'jazz':
         genre_audio_feature_all = Jazz.objects.all()
-        genre = 'jazz'
-    elif 'latin' in genre:
+    elif genre == 'latin':
         genre_audio_feature_all = Latin.objects.all()
-        genre = 'latin'
-    elif 'hip hop' in genre:
+    elif genre == 'hip hop':
         genre_audio_feature_all = Hiphop.objects.all()
-        genre = 'hip hop'
+    elif genre == 'electro':
+        genre_audio_feature_all = Electro.objects.all()
     else:
         print("오류")
 
@@ -165,6 +205,11 @@ def analysis(request, song_id):
     avg_speechiness = genre_audio_feature_all.aggregate(avg_speechiness=Avg('speechiness'))['avg_speechiness']
     avg_tempo = genre_audio_feature_all.aggregate(avg_tempo=Avg('tempo'))['avg_tempo'] / 100
     avg_valence = genre_audio_feature_all.aggregate(avg_valence=Avg('valence'))['avg_valence']
+
+
+
+    print(type(avg_acousticness))
+    print(type(avg_danceability))
 
     # 장르의 평균 audio feature
     genre_audio_feature_data = {
@@ -310,11 +355,11 @@ def analysis(request, song_id):
 
     return render(request, 'Ssavi_app/analysis.html', context)
 
-
+# 태주님 index 페이지에서 기능할 함수
 def album_list(request):
     page = int(request.GET.get('page', 1))
     albums_per_page = 15 # 페이지당 앨범 수
-    albums = Albums.objects.all()
+    albums = Albums.objects.all().order_by('-album_release_date')
     paginator = Paginator(albums, albums_per_page)
     page_albums = paginator.get_page(page)
 
@@ -333,79 +378,6 @@ def album_list(request):
 
     return render(request, 'Ssavi_app/index.html', context)
 
-def music_recommend(request):
-    tracks = Tracks.objects.all()
-    liketrack = []
-
-    if request.user.is_authenticated:
-        user_id = request.user.id
-        for i in tracks:
-            if LikedTrack.objects.filter(id=user_id, track_id=i.track_id).exists():
-                liketrack.append(i.track_id)
-
-    context = {
-        'tracks': tracks,
-        'liketrack' : liketrack
-    }
-
-    return render(request, 'Ssavi_app/music_recommend.html', context)
-
-def recommend(request):
-    # 로그인하지 않은 채 그냥 들어간다면 장르는 except로 고정된다.
-    # 유저의 인증정보를 조회하여 id값을 보낸다.
-    # 
-    if request.user.is_authenticated:
-        user_id = request.user.id
-        # user_genre_list = DBsearch.selectUserGenre(str(user_id))
-
-        # user_id 정수를 받아오면 users_app_user에서 user_genre 검색
-        try:
-            current_login_user = UsersAppUser.objects.get(id=user_id)
-            if current_login_user.user_genre is None:
-                user_genre_list = []
-            else:
-                user_genre_list = current_login_user.user_genre.split(",")
-        except UsersAppUser.DoesNotExist:
-            user_genre_list = []
-
-        # filter_query = Q()
-        # for genre in user_genre_list:
-        #     filter_query |= Q(album_genre__contains=genre)
-
-        # recom_albums = Albums.objects.filter(filter_query)
-        recom_albums = Albums.objects.all()
-
-        return render(request, 'Ssavi_app/recommend.html', {'recom_albums':recom_albums, 'user_genre_list':user_genre_list})
-
-    else:
-        user_genre_list = ['jazz', 'latin', 'alternative', 'R&b']
-        recom_albums = Albums.objects.all()
-    return render(request, 'Ssavi_app/recommend.html', {'recom_albums':recom_albums, 'user_genre_list':user_genre_list})
-
-def get_albuminfo():
-    search_result = sp.new_releases(country='KR', limit=9)
-    album_infos = []
-    album_image_urls = []
-
-    for re in search_result['albums']['items']:
-        album_image_urls.append(re['name'])
-        album_image_urls.append(re['artists'][0]['name'])
-        album_image_urls.append(re['release_date'])
-        for imagemedium in re['images']:
-            if imagemedium.get('height') == 300:
-                album_image_urls.append(imagemedium['url'])
-
-    for i in range(0, len(album_image_urls), 4):
-        album_info = {
-            'albumname': album_image_urls[i],
-            'artistname': album_image_urls[i+1],
-            'releasedate': album_image_urls[i+2],
-            'url': album_image_urls[i+3]
-        }
-        album_infos.append(album_info)
-
-    return album_infos
-
 
 def like_track(request):
     if request.method == 'POST':
@@ -415,7 +387,6 @@ def like_track(request):
         try:
             track_id = Tracks.objects.get(track_id=track_id)
             id = UsersAppUser.objects.get(id=id)
-            
 
             liked_track, created = LikedTrack.objects.get_or_create(track=track_id, id=id)
 
@@ -492,3 +463,73 @@ def album_search(request):
     }
 
     return render(request, 'ssavi_app/index_search.html', context)
+
+
+# 마이페이지 함수
+def playlist(request):
+    playlists = PlayList.objects.all()
+    return render(request, 'Ssavi_app/playlist.html', {"playlists":playlists})
+
+def liked_album(request):
+    albums = Albums.objects.all()
+    likealbum = []
+    liked_albums_info = []
+
+    if request.user.is_authenticated:
+        user_id = request.user.id
+        for i in albums:
+            if LikedAlbum.objects.filter(id=user_id, album_id=i.album_id).exists():
+                likealbum.append(i.album_id)
+
+    if request.user.is_authenticated:
+        user_id = request.user.id
+        for album_id in likealbum:
+            album = Albums.objects.get(album_id=album_id)
+            album_image = album.album_image
+            track_info = {
+                'album_image' : album_image,
+                'album_id' : album_id,
+                'album_name': album.album_name,
+                'album_artist': album.album_artist,
+            }
+            liked_albums_info.append(track_info)
+
+
+    return render(request, 'Ssavi_app/liked_album.html', {'liked_albums_info' : liked_albums_info, 'likealbum' : likealbum})
+
+def liked_track(request):
+    tracks = Tracks.objects.all()
+    liketrack = []
+    liked_tracks_info = []
+
+    if request.user.is_authenticated:
+        user_id = request.user.id
+        for i in tracks:
+            if LikedTrack.objects.filter(id=user_id, track_id=i.track_id).exists():
+                liketrack.append(i.track_id)
+
+
+    if request.user.is_authenticated:
+        user_id = request.user.id
+        for track_id in liketrack:
+            track = Tracks.objects.get(track_id=track_id)
+            album_image = sp.album(track.album_id)['images'][0]['url']
+            track_info = {
+                'album_image' : album_image,
+                'track_id' : track_id,
+                'track_name': track.track_name,
+                'track_preview': track.track_preview,
+            }
+            liked_tracks_info.append(track_info)
+    
+
+
+    return render(request, 'Ssavi_app/liked_track.html', {'liked_tracks_info' : liked_tracks_info, 'liketrack' : liketrack})
+
+def delPlayList(request, pk):
+    data = PlayList.objects.get(id=pk)
+    data.delete()
+    return redirect('playlist')
+
+def mypage(request):
+    return render(request, 'Ssavi_app/mypage.html')

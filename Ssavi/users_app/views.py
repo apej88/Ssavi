@@ -1,8 +1,10 @@
 from django.db import IntegrityError
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.http import JsonResponse
-from django.contrib.auth import login, logout
+from django.contrib.auth import authenticate, login, logout
 from .models import User, UsersAppUser
 from .forms import UserForm
 
@@ -62,9 +64,37 @@ def id_check(request):
     else:
         return JsonResponse({'error':'올바르지 않은 형식입니다'})
 
-# def user_update(request, password):
-#     user = 
-#     user_form = get_object_or_404(UsersAppUser, pk=username)
-#     if:
-#     user_info = get_object_or_404(UsersAppUser, )
-#     else:
+@login_required
+def user_update(request):
+    user = request.user
+    if request.method == 'POST':
+        user.user_name = request.POST['user_name']
+        user.email = request.POST['email']
+
+        user_genre = ','.join(request.POST.getlist('genre_list'))
+        user.user_genre = user_genre
+
+        new_password = request.POST['new_password']
+        if new_password:
+            user.set_password(new_password)
+
+        user.save()
+        messages.success(request, '회원정보 수정이 완료되었습니다.')
+
+        return redirect('sign_in')
+    else:
+        return render(request, 'users_app/user_update.html')
+    
+@login_required
+def password_check(request):
+    if request.method == 'POST':
+        password_check = request.POST.get('password', None)
+
+        if password_check is not None:
+            user = request.user
+            if user.check_password(password_check):
+                return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False})
+
+    return render(request, 'users_app/password_check.html')

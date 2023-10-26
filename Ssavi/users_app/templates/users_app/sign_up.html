@@ -1,29 +1,86 @@
 <!-- 회원가입 -->
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
+<link rel="stylesheet" href="{% static '/css/index.css' %}">
+<link rel="stylesheet" href="{% static '/css/sign.css' %}">
 <div id="users">
     <div class="login-wrapper">
-        <h2>Join</h2>
+        <h2>회원가입</h2>
         <form action="" method="post" id="login-form">
             {% csrf_token %}
-            <input type="text" name="username" placeholder="ID">
-            <input type="password" name="password" placeholder="Password">
-            <input type="text" name="user_name" placeholder="Name">
-            <input type="text" name="email" placeholder="Email">
-            <label for="remember-check">Favourite genre
-                <input type="checkbox" name="genre_list" value="k-pop">K-POP
-                <input type="checkbox" name="genre_list" value="jazz">JAZZ
-                <input type="checkbox" name="genre_list" value="R&b">R&B
-                <input type="checkbox" name="genre_list" value="latin">LATIN
-                <input type="checkbox" name="genre_list" value="J-pop">J-POP
-                <input type="checkbox" name="genre_list" value="alternative">Alternative
-                <input type="checkbox" name="genre_list" value="electro">Electro
-                <input type="checkbox" name="genre_list" value="hip hop">Hip-hop
-                <input type="checkbox" name="genre_list" value="Indie Pop">Indie-POP
-                <input type="checkbox" name="genre_list" value="rock">ROCK
+            <input id="input_id" type="text" name="username" placeholder="아이디" required>
+            <button class="id_check" type="button" value="id_check">아이디 중복 확인</button>
+            <input type="password" name="password" placeholder="비밀번호" required>
+            <input type="text" name="user_name" placeholder="별명" required>
+            <input type="text" name="email" placeholder="이메일" required>
+            <label for="remember-check">선호 장르
+                <table id="genre_checkbox">
+                    <tr>
+                        <td><label><input type="checkbox" name="genre_list" value="k-pop">K-POP</label></td>
+                        <td><label><input type="checkbox" name="genre_list" value="jazz">JAZZ</label></td>
+                        <td><label><input type="checkbox" name="genre_list" value="R&B">R&B</label></td>
+                    </tr>
+                    <tr>
+                        <td><label><input type="checkbox" name="genre_list" value="latin">LATIN</label></td>
+                        <td><label><input type="checkbox" name="genre_list" value="J-pop">J-POP</label></td>
+                        <td><label><input type="checkbox" name="genre_list" value="alternative">Alternative</label></td>
+                    </tr>
+                    <tr>
+                        <td><label><input type="checkbox" name="genre_list" value="electro">Electro</label></td>
+                        <td><label><input type="checkbox" name="genre_list" value="hip hop">Hip-hop</label></td>
+                        <td><label><input type="checkbox" name="genre_list" value="indie Pop">Indie-POP</label></td>
+                    </tr>
+                    <tr>
+                        <td><label><input type="checkbox" name="genre_list" value="rock">ROCK</label></td>
+                        <td><label></label></td>
+                        <td><label></label></td>
+                    </tr>
+                </table>
             </label>
-            <input type="submit" value="Join">
+            <button id="joinBtn" type="submit" value="Join">가입하기</button>
         </form>
     </div>
 </div>
+<script src="{% static '/js/jquery-3.7.1.min.js' %}"></script>
+<script>
+    // 로그인 입력폼 검사
+
+$(document).ready(function() {
+    // 장르 2개 이상 선택
+    $('#login-form').submit(function(event) {
+        let selected_genres = $('input[name="genre_list"]:checked').length;
+        if (selected_genres < 2) {
+            alert('최소 2개 이상의 장르를 선택해주십시오.');
+            event.preventDefault();
+        }
+    })
+
+    // 아이디 중복 검사 기능
+    $('.id_check').click(function() {
+        var username = $('#input_id').val();
+        if (username) {
+            let csrftoken = $('[name=csrfmiddlewaretoken]').val();
+            $.ajax({
+                type: 'post',
+                url: '{% url "id_check" %}',
+                data: {'username': username},
+                headers: {'X-CSRFToken': csrftoken},
+                success: function(data) {
+                    console.log(data)
+                    if (data.is_taken) {
+                        alert('이미 사용 중인 아이디입니다.');
+                        $('#input_id').val('');
+                    } else {
+                        alert('사용 가능한 아이디입니다.');
+                    }
+                }
+            });
+        } else {
+            alert("아이디를 입력해주십시오");
+        };
+    });
+});
+
+</script>
 {% endblock content %}

@@ -3,7 +3,6 @@
     display: none;
     left: 0;
     z-index: 2;
-    width: 80%; /* 화면 전체 너비로 설정 */
     left: 50%; /* 부모 요소의 중앙을 기준으로 */
     transform: translate(-50%, 0); /* 가운데 정렬 */
     align-items: center;
@@ -40,5 +39,9 @@
 }
 
 .logo > a > img {
-    width: 100px;
+    height: 80px;
+}
+
+#searchIcon > img {
+    height: 30px;
 }

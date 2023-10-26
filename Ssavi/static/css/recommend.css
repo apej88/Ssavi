@@ -70,7 +70,7 @@ nav.menu a {
 
 .recom_img {
     position: relative;
-    z-index: 1;
+    /* z-index: 1; */
     width: 200px;
 }
 
@@ -79,7 +79,7 @@ nav.menu a {
     position: absolute; /* 추가: 상위 div를 기준으로 절대 위치 설정 */
     background: rgba(0, 0, 0, 0.7);
     color: white;
-    z-index: 2;
+    /* z-index: 2; */
     text-align: center;
     bottom: 0;
     width: 200px; /* 이미지와 동일한 너비 */
@@ -91,13 +91,13 @@ nav.menu a {
 
   }
 
-/* .like-button img {
+.like-button img {
     position: absolute;
     width: 40px;
-    z-index: 3;
+    /* z-index: 3; */
     bottom: 10px;
     right: 10px;
-} */
+  }
 
 .back {
     font-size: large;
@@ -105,7 +105,7 @@ nav.menu a {
     height: 35px;
     border-radius: 5px;
     position: relative;
-    bottom: 120px; left: 10px;
+    bottom: 120px; left: -20px;
     z-index: 4;
 }
 
