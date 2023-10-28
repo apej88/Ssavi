@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/liked_track.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/mypage.css' %}">
+<div id="mypageBox">
+    <nav id="mypage_nav">
+        <a href="{% url 'playlist' %}">플레이리스트</a>
+        <a href="{% url 'liked_album' %}">좋아요한 앨범</a>
+        <a href="{% url 'liked_track' %}">좋아요한 트랙</a>
+        <a href="{% url 'pwd_check' %}">회원정보</a>
+    </nav>
+    <div id="liked_track_box">
+        <table id='album_songs'>
+            <tr>
+                <th id='album_song_no'>번호</th>
+                <th id="album_song_image">표지</th>
+                <th id='album_song_name'>곡명</th>
+                <th id='album_song_preview'>미리듣기</th>
+                <th id='album_song_playlist'>담기</th>
+                <th id='album_song_thumbs'>좋아요</th>
+                <th id='album_song_analysis'>분석</th>
+            </tr>
+            {% for track in liked_tracks_info %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>
+                        <div class="lt_image">
+                            <img src='{{track.album_image}}'></td>
+                        </div>
+                    <td>{{track.track_name}}</td>
+                    <td>
+                            <audio controls class="preview">
+                                <source src="{{ track.track_preview }}" type="audio/mpeg">
+                            </audio>
+                    </td>
+                    <td><a href="#"><button><img src="{% static 'image/add_playlist.png' %}"></button></a></td>
+                    <td>
+                        <div class="like-button">
+                            <img id="thumb-icon" onclick="likeTrack(this, '{{ track.track_id }}')" data-track-id="{{ track.track_id }}" src="{% static '/image/Thumbs_up.png' %}" alt="Liked">
+                        </div>
+                    </td>
+                    <td><a href="{% url 'analysis' track.track_id %}"><button class='audio_feature_btn'><img src="{% static 'image/analysis.png' %}"></button></a></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+<script>
+        // 페이지가 로드될 때 실행될 함수
+    // 'liketrack' 변수는 Python에서 전달된 변수로 JavaScript에서 사용 가능
+    var liketrack = {{ liketrack|safe }};
+
+    // 페이지가 로드될 때 실행될 함수
+    window.addEventListener('load', function() {
+        var thumbIcons = document.querySelectorAll("#thumb-icon");
+        
+        thumbIcons.forEach(function(thumbIcon){
+
+        var trackId = thumbIcon.getAttribute("data-track-id");
+
+        if (liketrack.includes(trackId)) {
+            thumbIcon.src = "{% static '/image/Thumbs_up_fill.png' %}";
+        } else {
+            thumbIcon.src = "{% static '/image/Thumbs_up.png' %}";
+        }
+
+        });
+    });
+
+    function likeTrack(thumbIcon, trackId) {
+        var currentImageSrc = thumbIcon.src;
+        var currentImageFileName = currentImageSrc.substr(currentImageSrc.lastIndexOf('/') + 1);
+        
+        if (currentImageFileName === 'Thumbs_up.png') {
+            thumbIcon.src = '{% static "/image/Thumbs_up_fill.png" %}';
+            like_Track(trackId, true);
+        } else {
+            thumbIcon.src = '{% static "/image/Thumbs_up.png" %}';
+            like_Track(trackId, false);
+        }
+        
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    function like_Track(trackId, isLiked) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", '/like_track/', true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+        
+        xhr.onreadystatechange = function() {
+            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                console.log(this.responseText);
+            }
+        }
+        
+        if ({{ request.user.is_authenticated|lower }}) {
+            xhr.send("id={{ request.user.id|default:'null' }}&track_id=" + trackId);
+        } else {
+            alert('로그인이 필요합니다.');
+        }
+    }
+
+</script>
+
+{% endblock content %}

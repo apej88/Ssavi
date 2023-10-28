@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static '/css/index.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/mypage.css' %}">
+<div id="mypageBox">
+    <nav id="mypage_nav">
+        <a href="{% url 'playlist' %}">플레이리스트</a>
+        <a href="{% url 'liked_album' %}">좋아요한 앨범</a>
+        <a href="{% url 'liked_track' %}">좋아요한 트랙</a>
+        <a href="{% url 'pwd_check' %}">회원정보</a>
+    </nav>
+    <div id="playlistBox">
+        <div id="header">
+            <table id="plheader">
+                <tr>
+                    <th class="pl-th-1">No.</th>
+                    <th>곡 정보</th>
+                </tr>
+            </table>
+        </div>
+        <div id="play_list">
+            {% for playlist in playlists %}
+            <p class="playlist_no">{{playlist.playlist_no}}</p>
+            <p class="playlist_img">{{playlist.track.album.album_image}}</p>
+            <p class="playlist_track">{{playlist.track.track_name}}</p>
+            <p class="playlist_artist">{{playlist.track.album.album_artist}}</p>
+            <a href="{% url 'delete' playlist_no %}">삭제</a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

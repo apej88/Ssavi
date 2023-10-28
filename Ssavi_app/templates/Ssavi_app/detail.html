@@ -1,0 +1,202 @@
+<!-- 상세페이지입니다 -->
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/detail.css' %}">
+<script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+
+<nav class="menu">
+    <a href="{% url 'genre_albums' %}">장르별 음악</a>
+    <a href="{% url 'index' %}">최신음악</a>
+    {% if user.is_authenticated %}
+    <a href="{% url 'music_recommend' %}">음악 추천 받기</a>
+    {% endif %}
+</nav>
+<div id="detailBox">
+    <div id='album_box'>
+        <div id='album_title'>
+            <h2>앨범 정보</h2>
+        </div>
+        <div id='album_detail'>
+            <table>
+                <tr>
+                    <td class="image-cell">
+                        <img src="{{ album.album_image }}">
+                    </td>
+                    <td class="description-cell">
+                        <span class='detail_album'>앨범</span>
+                        <div class='album_name'>
+                            <span class='detail_album_name'>{{ album.album_name }}</span>
+                        </div>
+                        <div class='album_artist'>
+                            {{ album.album_artist }}
+                        </div>
+                        <div class='album_detail'>
+                            <span>발매일  </span> {{ album.album_release_date }}
+                        </div>
+                        <div class='album_detail'>
+                            <span>장르  </span>
+                                {% for genre in genres %}
+                                    {{ genre }}
+                                {% endfor %}
+                        </div>
+                        <div class="like-button">
+                            <img id="heart-icon" onclick="likeAlbum(this, '{{ album.album_id }}')" data-album-id="{{ album.album_id }}" src="{% static '/image/heart_icon1.png' %}" alt="Liked">
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div id='album_song_box'>
+        <div id='album_song_title'>
+            <p>수록곡 <span>({{songs_data|length}})</span></p>
+        </div>
+        <div id='album_song_detail'>
+            {% if songs_data %}
+                <table id="album_songs">
+                    <tr>
+                        <th id='album_song_no'>번호</th>
+                        <th id='album_song_name'>곡명</th>
+                        <th id='album_song_preview'>미리듣기</th>
+                        <th id='album_song_playlist'>담기</th>
+                        <th id='album_song_thumbs'>좋아요</th>
+                        <th id='album_song_analysis'>분석</th>
+                    </tr>
+                    {% for song in songs_data %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ song.song_name }}</td>
+                            <td>
+                                <audio controls class="preview">
+                                    <source src="{{ song.song_preview_url }}" type="audio/mpeg">
+                                </audio>
+                            </td>
+                            <td><a href="#"><button><img src="{% static 'image/add_playlist.png' %}"></button></a></td>
+                            <td>
+                                <div class="like-button">
+                                    <img id="thumb-icon" onclick="likeTrack(this, '{{ song.song_id }}')" data-track-id="{{ song.song_id }}" src="{% static '/image/Thumbs_up.png' %}" alt="Liked">
+                                </div>
+                            </td>
+                            <td><a href="{% url 'analysis' song.song_id %}"><button class='audio_feature_btn' data-songid="{{song.song_id}}"><img src="{% static 'image/analysis.png' %}"></button></a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+        // 페이지가 로드될 때 실행될 함수
+    
+    // 'liketrack' 변수는 Python에서 전달된 변수로 JavaScript에서 사용 가능
+    var likealbum = {{ likealbum|safe }};
+    
+    var liketrack = {{ liketrack|safe }};
+
+    // 페이지가 로드될 때 실행될 함수
+    window.addEventListener('load', function() {
+        var heartIcons = document.querySelectorAll("#heart-icon");
+        var thumbIcons = document.querySelectorAll("#thumb-icon");
+        
+        heartIcons.forEach(function(heartIcon) {
+           
+        var albumId = heartIcon.getAttribute("data-album-id");
+
+        if (likealbum.includes(albumId)) {
+            heartIcon.src = "{% static '/image/heart_icon2.png' %}";
+        } else {
+            heartIcon.src = "{% static '/image/heart_icon1.png' %}";
+        }
+
+        });  
+
+        thumbIcons.forEach(function(thumbIcon){
+
+        var trackId = thumbIcon.getAttribute("data-track-id");
+
+        if (liketrack.includes(trackId)) {
+            thumbIcon.src = "{% static '/image/Thumbs_up_fill.png' %}";
+        } else {
+            thumbIcon.src = "{% static '/image/Thumbs_up.png' %}";
+        }
+
+        });
+    });
+
+    
+    function likeAlbum(heartIcon, albumId) {
+        var currentImageSrc = heartIcon.src;
+        var currentImageFileName = currentImageSrc.substr(currentImageSrc.lastIndexOf('/') + 1);
+        
+        if (currentImageFileName === 'heart_icon1.png') {
+            heartIcon.src = '{% static "/image/heart_icon2.png" %}';
+            like_Album(albumId, true);
+        } else {
+            heartIcon.src = '{% static "/image/heart_icon1.png" %}';
+            like_Album(albumId, false);
+        }
+        
+        event.preventDefault();
+        event.stopPropagation();
+    }
+    
+
+    function like_Album(albumId, isLiked) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", '/like_album/', true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+        
+        xhr.onreadystatechange = function() {
+            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                console.log(this.responseText);
+            }
+        }
+        
+        if ({{ request.user.is_authenticated|lower }}) {
+            xhr.send("id={{ request.user.id|default:'null' }}&album_id=" + albumId);
+        } else {
+            alert('로그인이 필요합니다.');
+        }
+    }
+
+    function likeTrack(thumbIcon, trackId) {
+        var currentImageSrc = thumbIcon.src;
+        var currentImageFileName = currentImageSrc.substr(currentImageSrc.lastIndexOf('/') + 1);
+        
+        if (currentImageFileName === 'Thumbs_up.png') {
+            thumbIcon.src = '{% static "/image/Thumbs_up_fill.png" %}';
+            like_Track(trackId, true);
+        } else {
+            thumbIcon.src = '{% static "/image/Thumbs_up.png" %}';
+            like_Track(trackId, false);
+        }
+        
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    function like_Track(trackId, isLiked) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", '/like_track/', true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+        
+        xhr.onreadystatechange = function() {
+            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                console.log(this.responseText);
+            }
+        }
+        
+        if ({{ request.user.is_authenticated|lower }}) {
+            xhr.send("id={{ request.user.id|default:'null' }}&track_id=" + trackId);
+        } else {
+            alert('로그인이 필요합니다.');
+        }
+    }
+
+</script>
+{% endblock content %}

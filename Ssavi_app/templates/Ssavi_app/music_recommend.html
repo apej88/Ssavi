@@ -1,0 +1,108 @@
+<!-- 초기 화면입니다. 기본적으로 최신 앨범들이 나열되어있습니다. -->
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/music_recommend.css' %}">
+
+<nav class="menu">
+    <a href="{% url 'genre_albums' %}">장르별 음악</a>
+    <a href="{% url 'index' %}">최신음악</a>
+    <a href="{% url 'music_recommend' %}">음악 추천 받기</a>
+</nav>
+
+
+<div id="indexBox">
+    <article>
+        <h1>음악 추천 받기</h1>
+        <ul>
+            {% for track in tracks %}
+            <li class='track_li'>
+                <img class="recom_track_img" src="{{ track.album.album_image }}" alt="{{ track.album.album_artist }} Album Image">
+                <div class="container">
+                    <h2>곡명 : {{ track.track_name }}</h2>
+                    <p>아티스트 : {{ track.album.album_artist }}</p>
+                    <p>장르 : {{ track.album.album_genre }}</p>
+                </div>
+                <audio controls>
+                    <source src="{{ track.track_preview }}" type="audio/mpeg">
+                    "error"
+                </audio>
+                <div class="like-button">
+                    <img id="thumb-icon" onclick="likeAlbum(this, '{{ track.track_id }}')" data-track-id="{{ track.track_id }}" src="{% static '/image/Thumbs_up.png' %}" alt="Liked">
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </article>
+</div>
+<script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+<script>
+    // 페이지가 로드될 때 실행될 함수
+    
+    // 'liketrack' 변수는 Python에서 전달된 변수로 JavaScript에서 사용 가능
+    var liketrack = {{ liketrack|safe }};
+    
+    
+    // 페이지가 로드될 때 실행될 함수
+    window.addEventListener('load', function() {
+        var heartIcons = document.querySelectorAll("#thumb-icon");
+
+        heartIcons.forEach(function(heartIcon) {
+           
+        var trackId = heartIcon.getAttribute("data-track-id");
+
+        if (liketrack.includes(trackId)) {
+            heartIcon.src = "{% static '/image/Thumbs_up_fill.png' %}";
+        } else {
+            heartIcon.src = "{% static '/image/Thumbs_up.png' %}";
+        }
+
+        });   
+    });
+
+
+
+    
+    //아래는 정상 적동
+
+    function likeAlbum(heartIcon, trackId) {
+        var currentImageSrc = heartIcon.src;
+        var currentImageFileName = currentImageSrc.substr(currentImageSrc.lastIndexOf('/') + 1);
+        
+        if (currentImageFileName === 'Thumbs_up.png') {
+            heartIcon.src = '{% static "/image/Thumbs_up_fill.png" %}';
+            likeTrack(trackId, true);
+        } else {
+            heartIcon.src = '{% static "/image/Thumbs_up.png" %}';
+            likeTrack(trackId, false);
+        }
+        
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    function likeTrack(trackId, isLiked) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", '/like_track/', true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+        
+        xhr.onreadystatechange = function() {
+            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                console.log(this.responseText);
+            }
+        }
+        
+        if ({{ request.user.is_authenticated|lower }}) {
+            xhr.send("id={{ request.user.id|default:'null' }}&track_id=" + trackId);
+        } else {
+            alert('로그인이 필요합니다.');
+        }
+    }
+
+
+
+</script>
+{% endblock content %}

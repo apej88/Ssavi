@@ -1,0 +1,40 @@
+.search-engine {
+    position: absolute;
+    display: none;
+    left: 0;
+    z-index: 2;
+    width: 80%; /* 화면 전체 너비로 설정 */
+    left: 50%; /* 부모 요소의 중앙을 기준으로 */
+    transform: translate(-50%, 0); /* 가운데 정렬 */
+    align-items: center;
+    text-align: center;
+    background-color: #f1f1f1;
+    padding: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.search-condition,
+.search-input,
+.search-button {
+    margin: 5px;
+    padding: 10px;
+
+}
+
+.search-condition {
+    border: 1px solid #ccc;
+}
+
+.search-input {
+    flex: 2; /* 자동으로 너비를 조절하도록 설정합니다. */
+    min-width: 100px; /* 최소 너비를 지정할 수 있습니다. */
+    margin-right: 10px; /* 다른 요소와의 간격을 설정할 수 있습니다. */
+}
+
+.search-button {
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}

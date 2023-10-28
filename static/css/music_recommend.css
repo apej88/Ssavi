@@ -1,0 +1,111 @@
+.menu a {
+    
+    margin-left: 20px;
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+}
+
+nav.menu {
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+nav.menu a {
+    text-decoration: none;
+    color: #333;
+    margin: 0 20px;
+    font-weight: bold;
+}
+
+/* 리스트 항목 스타일 */
+li {
+    list-style: none;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+}
+
+img {
+    margin-right: 10px;
+    border-radius: 5px;
+}
+
+/* 이미지 스타일 */
+.recom_track_img {
+    width: 100px;
+    height: 100px;
+}
+
+/* 컨테이너 스타일 */
+.container {
+    display: flex;
+    flex-direction: column; /* 가로 배치를 세로로 변경 */
+    margin-left: 10px; /* 내용과 이미지 사이의 간격 조절 */
+    width: 800px;
+}
+
+/* 제목 스타일 */
+h2 {
+    display: inline; /* 가로 배치 설정 */
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+    color: #333; /* 텍스트 색상 */
+}
+
+/* 아티스트 및 장르 스타일 */
+p {
+    display: inline; /* 가로 배치 설정 */
+    font-size: 14px;
+    margin: 5px 0;
+    color: #666; /* 텍스트 색상 */
+}
+/* 오디오 플레이어 스타일 */
+audio {
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* Like 버튼 스타일
+button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* Like 버튼 호버 스타일 */
+/* button:hover {
+    background-color: #0056b3;
+} */
+
+#thumb-icon {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    margin-left: 10px;
+    margin-top: 10px;
+    right: 5px;
+    bottom: 5px;
+    color: white;
+    background: none;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.heart-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+  }

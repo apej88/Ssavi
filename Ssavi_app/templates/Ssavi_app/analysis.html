@@ -1,0 +1,212 @@
+<!-- audio feature 분석페이지 입니다 -->
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/analysis.css' %}">
+<script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+
+<nav class="menu">
+    <a href="{% url 'genre_albums' %}">장르별 음악</a>
+    <a href="{% url 'index' %}">최신 음악</a>
+    <a href="#">음악 추천 받기</a>
+</nav>
+<div id="analysis">
+    <div class="current-track">
+        <h1>현재 음악</h1>
+        <div>
+            <div class="current_album_image">
+                <img src="{{ current_song.0 }}">
+            </div>
+            <div class="current_list">
+                <h3>{{ current_song.1 }} - {{ current_song.2 }}</h3>
+                <div class="like-button">
+                    <img id="thumb-icon" onclick="likeTrack(this, '{{ current_song.4 }}')" data-track-id="{{ current_song.4 }}" src="{% static '/image/Thumbs_up.png' %}" alt="Liked">
+                </div>
+            </div>
+            <div class="current_preview">
+                    <audio controls>
+                        <source src="{{ current_song.3 }}" type="audio/mpeg">
+                    </audio>
+                </div>
+        </div>
+        <div>
+            <img src="data:image/png;base64,{{ image }}">
+        </div>
+        <div id="audio_feature">
+            <li id="audio_feature_list">
+                <ul><p><span>acousticness</span> : 트랙이 음향인지 여부에 대한 0.0에서 1.0 사이의 신뢰도 측정값입니다. 1.0은 트랙이 음향적이라는 높은 신뢰도를 나타냅니다.</p></ul>
+                <ul><p><span>danceability</span> :  템포, 리듬 안정성, 비트 강도 및 전반적인 규칙성을 포함한 음악적 요소의 조합을 기반으로 트랙이 댄스에 얼마나 적합한지를 나타냅니다. 값이 0.0이면 춤을 추기에 가장 적합하지 않고 1.0이면 가장 춤을 추기에 적합합니다.</p></ul>
+                <ul><p><span>energy</span> : 0.0에서 1.0 사이의 척도이며 강도와 활동의 지각적 척도를 나타냅니다. 일반적으로 에너지가 넘치는 트랙은 빠르고 시끄럽고 시끄럽게 느껴집니다. 예를 들어, 데스 메탈은 에너지가 높은 반면 바흐의 전주곡은 낮은 점수를 받았습니다. 이 속성에 기여하는 지각적 특징에는 동적 범위, 인지된 음량, 음색, 시작 속도 및 일반 엔트로피가 포함됩니다.</p></ul>
+                <ul><p><span>loudness</span> : 전체 트랙의 평균을 구하며 트랙의 상대적 음량을 비교하는 데 유용합니다. 음량은 물리적 강도(진폭)의 주요 심리적 상관관계인 소리의 품질입니다.</p></ul>
+                <ul><p><span>speechiness</span> : 트랙에서 음성 단어의 존재를 감지합니다. 음성과 유사한 녹음(예: 토크쇼, 오디오북, 시)이 많을수록 속성 값은 1.0에 가까워집니다. 0.66 이상의 값은 아마도 전적으로 음성으로 구성된 트랙을 나타냅니다. 0.33에서 0.66 사이의 값은 랩 음악과 같은 경우를 포함하여 섹션 또는 레이어로 음악과 음성을 모두 포함할 수 있는 트랙을 나타냅니다. 0.33 미만의 값은 음악 및 기타 음성과 유사한 트랙을 나타낼 가능성이 높습니다.</p></ul>
+                <ul><p><span>tempo</span> : 분당 비트 수(BPM)로 표시되는 트랙의 전체 예상 템포입니다. 음악 용어에서 템포는 주어진 곡의 속도 또는 속도이며 평균 비트 지속 시간에서 직접 파생됩니다.</p></ul>
+                <ul><p><span>valence</span> : 트랙이 전달하는 음악적 긍정성을 설명하는 0.0에서 1.0 사이의 측정값입니다. 원자가가 높은 트랙은 더 긍정적인 소리(예: 행복, 쾌활함, 행복감)를 내는 반면, 낮은 원자가의 트랙은 더 부정적인 소리(예: 슬픔, 우울, 분노)를 냅니다.</p></ul>
+            </li>
+        </div>
+    </div>
+    <div class="recommendations">
+        <h1>추천 음악</h1>
+        <div class="recommendation">
+            <div class="recommendation-info">
+                <div class="recommendation_album_image">
+                    <img src="{{ recommendation_album_images.0 }}">
+                </div>
+                <div class="recommendation_list">
+                    <h3>{{ recommendation_track_names.0 }} - {{ recommendation_track_artists.0 }}</h3>
+                    <button><img src="{% static 'image/add_playlist.png' %}"></button>
+                    <button class='Thumbs_up_btn'><img class='Thumbs_up_image' src="{% static 'image/Thumbs_up.png' %}"></button>
+                </div>
+                <div class="recommendation_preview">
+                    <audio controls>
+                        <source src="{{ recommendation_tracks_preview_urls.0 }}" type="audio/mpeg">
+                    </audio>
+                </div>
+            </div>
+            <div class="recommendation_graph">
+                <img src="data:image/png;base64,{{ recommendations_images.0 }}">
+            </div>
+        </div>
+        <div class="recommendation">
+            <div class="recommendation-info">
+                <div class="recommendation_album_image">
+                    <img src="{{ recommendation_album_images.1 }}">
+                </div>
+                <div class="recommendation_list">
+                    <h3>{{ recommendation_track_names.1 }} - {{ recommendation_track_artists.1 }}</h3>
+                    <button><img src="{% static 'image/add_playlist.png' %}"></button>
+                    <button class='Thumbs_up_btn'><img class='Thumbs_up_image' src="{% static 'image/Thumbs_up.png' %}"></button>
+                </div>
+                <div class="recommendation_preview">
+                    <audio controls>
+                        <source src="{{ recommendation_tracks_preview_urls.1 }}" type="audio/mpeg">
+                    </audio>
+                </div>
+            </div>
+            <div class="recommendation_graph">
+                <img src="data:image/png;base64,{{ recommendations_images.1 }}">
+            </div>
+        </div>
+        <div class="recommendation">
+            <div class="recommendation-info">
+                <div class="recommendation_album_image">
+                    <img src="{{ recommendation_album_images.2 }}">
+                </div>
+                <div class="recommendation_list">
+                    <h3>{{ recommendation_track_names.2 }} - {{ recommendation_track_artists.2 }}</h3>
+                    <button><img src="{% static 'image/add_playlist.png' %}"></button>
+                    <button class='Thumbs_up_btn'><img class='Thumbs_up_image' src="{% static 'image/Thumbs_up.png' %}"></button>
+                </div>
+                <div class="recommendation_preview">
+                    <audio controls>
+                        <source src="{{ recommendation_tracks_preview_urls.2 }}" type="audio/mpeg">
+                    </audio>
+                </div>
+            </div>
+            <div class="recommendation_graph">
+                <img src="data:image/png;base64,{{ recommendations_images.2 }}">
+            </div>
+        </div>
+        <div class="recommendation">
+            <div class="recommendation-info">
+                <div class="recommendation_album_image">
+                    <img src="{{ recommendation_album_images.3 }}">
+                </div>
+                <div class="recommendation_list">
+                    <h3>{{ recommendation_track_names.3 }} - {{ recommendation_track_artists.3 }}</h3>
+                    <button><img src="{% static 'image/add_playlist.png' %}"></button>
+                    <button class='Thumbs_up_btn'><img class='Thumbs_up_image' src="{% static 'image/Thumbs_up.png' %}"></button>
+                </div>
+                <div class="recommendation_preview">
+                    <audio controls>
+                        <source src="{{ recommendation_tracks_preview_urls.3 }}" type="audio/mpeg">
+                    </audio>
+                </div>
+            </div>
+            <div class="recommendation_graph">
+                <img src="data:image/png;base64,{{ recommendations_images.3 }}">
+            </div>
+        </div>
+        <div class="recommendation">
+            <div class="recommendation-info">
+                <div class="recommendation_album_image">
+                    <img src="{{ recommendation_album_images.4 }}">
+                </div>
+                <div class="recommendation_list">
+                    <h3>{{ recommendation_track_names.4 }} - {{ recommendation_track_artists.4 }}</h3>
+                    <button><img src="{% static 'image/add_playlist.png' %}"></button>
+                    <button class='Thumbs_up_btn'><img class='Thumbs_up_image' src="{% static 'image/Thumbs_up.png' %}"></button>
+                </div>
+                <div class="recommendation_preview">
+                    <audio controls class="preview">
+                        <source src="{{ recommendation_tracks_preview_urls.4 }}" type="audio/mpeg">
+                    </audio>
+                </div>
+            </div>
+            <div class="recommendation_graph">
+                <img src="data:image/png;base64,{{ recommendations_images.4 }}">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+        // 페이지가 로드될 때 실행될 함수
+    
+    // 'liketrack' 변수는 Python에서 전달된 변수로 JavaScript에서 사용 가능    
+    var liketrack = {{ liketrack|safe }};
+
+    // 페이지가 로드될 때 실행될 함수
+    window.addEventListener('load', function() {
+        var thumbIcons = document.querySelectorAll("#thumb-icon");
+
+        thumbIcons.forEach(function(thumbIcon){
+
+        var trackId = thumbIcon.getAttribute("data-track-id");
+
+        if (liketrack.includes(trackId)) {
+            thumbIcon.src = "{% static '/image/Thumbs_up_fill.png' %}";
+        } else {
+            thumbIcon.src = "{% static '/image/Thumbs_up.png' %}";
+        }
+
+        });
+    });
+
+    function likeTrack(thumbIcon, trackId) {
+        var currentImageSrc = thumbIcon.src;
+        var currentImageFileName = currentImageSrc.substr(currentImageSrc.lastIndexOf('/') + 1);
+        
+        if (currentImageFileName === 'Thumbs_up.png') {
+            thumbIcon.src = '{% static "/image/Thumbs_up_fill.png" %}';
+            like_Track(trackId, true);
+        } else {
+            thumbIcon.src = '{% static "/image/Thumbs_up.png" %}';
+            like_Track(trackId, false);
+        }
+        
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    function like_Track(trackId, isLiked) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", '/like_track/', true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+        
+        xhr.onreadystatechange = function() {
+            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                console.log(this.responseText);
+            }
+        }
+        
+        if ({{ request.user.is_authenticated|lower }}) {
+            xhr.send("id={{ request.user.id|default:'null' }}&track_id=" + trackId);
+        } else {
+            alert('로그인이 필요합니다.');
+        }
+    }
+
+</script>
+{% endblock content %}

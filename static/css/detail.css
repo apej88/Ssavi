@@ -1,0 +1,215 @@
+.menu a {
+    margin-left: 20px;
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+}
+  
+nav.menu {
+    margin: 20px 0 20px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+  
+nav.menu a {
+    text-decoration: none;
+    color: #333;
+    margin: 0 20px;
+    font-weight: bold;
+}
+
+/* 전체 박스 */
+#detailBox{
+    margin: 0 auto;
+    margin-top: 20px;
+}
+
+/* 앨범 정보 */
+#album_box {
+    display: block;
+    width: 65%;
+    margin: 0 auto;
+}
+
+#album_title h2{
+    font-size: 30px;
+}
+
+#album_detail {
+    border-collapse: collapse;
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+#album_detail td {
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+#album_detail img {
+    max-width: 100%;
+    margin: 0 auto;
+    display: block;
+}
+
+#album_detail strong {
+    color: #333;
+}
+
+#album_detail .image-cell {
+    width: 25%; /* 이미지 셀의 너비 */
+}
+
+#album_detail .description-cell {
+    width: 75%; /* 설명 셀의 너비 */
+}
+
+#album_detail .description-cell .album_name {
+    display: block;
+}
+
+#album_detail .description-cell .detail_album {
+    font-size: 20px;
+    color: gray;
+    margin-left: 20px;
+    margin-bottom: 0;
+}
+
+#album_detail .description-cell .detail_album_name {
+    margin-top: 0;
+    font-size: 45px;
+}
+
+#album_detail .description-cell p{
+    font-size: 15px;
+    margin-left: 10px;
+}
+
+#album_detail .description-cell .album_name, .album_artist{
+    margin-left: 20px;
+    margin-bottom: 0;   
+    font-size: 30px;
+}
+
+#album_detail .description-cell .album_artist{
+    margin-top: 0;
+    margin-bottom: 50px;
+    font-size: 20px;
+    color: gray;
+}
+
+#album_detail .description-cell .album_detail{
+    margin-left: 20px;
+    color: gray;
+    margin-bottom: 5px;
+}   
+
+#album_detail .description-cell .album_detail span{
+    color: darkgray;
+}
+
+#album_detail .description-cell .album_like{
+    margin-top: 10px;
+}
+
+#album_detail .description-cell .album_like img {
+    max-width: 20px;
+    max-height: 20px;
+}
+
+#album_detail .description-cell .like-button {
+    /* position: relative; */
+    width: 30px;
+    margin-left: 20px;
+}
+
+/* 앨범 안의 수록곡 정보 */
+#album_songs {
+    width: 65%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    margin: 0 auto;
+}
+
+#album_song_box {
+    display: block;
+}
+
+#album_song_title {
+    width: 65%;
+    margin: 0 auto;
+}
+
+#album_song_title p{
+    font-size: 20px;
+}
+
+#album_song_title span{
+    color: gray;
+}
+
+#album_songs th, #album_songs td {
+    /* border: 1px solid #ddd; */
+    border-bottom: 1px solid skyblue;
+    padding: 10px;
+    text-align: center;
+}
+
+#album_songs th {
+    background-color: skyblue;
+}
+
+#album_song_name {
+    width: 15%;
+}
+
+#song_no, #album_song_playlist, #album_song_thumbs, #album_song_analysis {
+    width: 10%;
+}
+
+#album_song_preview {
+    width: 45%;
+}
+
+#album_song_box {
+    margin-bottom: 40px;
+}
+
+/* 트랙 별 색상 바꾸기 */
+/* #album_songs tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+#album_songs tr:nth-child(odd) {
+    background-color: #fff;
+} */
+
+#album_songs audio {
+    width: 100%;
+}
+
+#album_songs button {
+    background-color: transparent;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#album_songs img {
+    max-width: 20px;
+    max-height: 20px;
+    margin: 0 auto;
+    transition: opacity 0.3s; /* 투명도 변화를 부드럽게 만들기 위한 트랜지션 설정 */
+}
+
+#album_songs img:hover, .like-button:hover {
+    opacity: 0.5;
+}
+
+.like-button {
+    cursor: pointer;
+    transition: opacity 0.3s;
+}

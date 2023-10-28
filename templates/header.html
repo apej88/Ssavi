@@ -1,0 +1,52 @@
+<!-- header -->
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/header_css.css' %}">
+<script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+
+<div id="headerBox">
+    <div class="logo">
+        <a href="{% url 'index' %}">
+            <img src="{% static '/image/ssavi2.png' %}" alt="">
+        </a></div>
+    <div class="menu">
+        <span id="searchIcon">
+            <img src="{% static '/image/search.png' %}" alt="">
+        </span>
+        {% if user.is_authenticated %}
+        <a href="">{{ user.user_name }}님 로그인</a>
+        <a href="{% url 'sign_out' %}">로그아웃</a>
+        <a href="{% url 'mypage' %}">마이페이지</a>
+        {% else %}
+        <a href="{% url 'sign_in' %}">로그인</a>
+        <a href="{% url 'sign_up' %}">회원가입</a>
+        {% endif %}
+    </div>
+</div>
+<!-- 평소 보이지 않다가 버튼 누르면 내려온다 -->
+<div class="search-engine">
+    <form method="post" action="{% url 'album_search' %}" class='album_search_frm'>
+        {% csrf_token %}
+        <select class="search-condition" name="search_condition">
+            <option value="album_name">앨범 이름</option>
+            <option value="album_genre">장르 이름</option>
+            <option value="album_artist">아티스트 이름</option>
+        </select>
+        <input type="text" class="search-input" name="keyword">
+        <input class="search-button" type="submit" value="검색">
+    </form>
+</div>
+
+<script>
+    $(document).ready(function() {
+        const searchEngine = $(".search-engine");
+        const searchIcon = $("#searchIcon");
+        
+        searchIcon.click(function() {
+            if (searchEngine.css("display") === "none") {
+                searchEngine.css("display", "flex");
+            } else {
+                searchEngine.css("display", "none");
+            }
+        });
+    });
+</script>

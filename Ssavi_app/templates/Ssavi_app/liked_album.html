@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/liked_track.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/mypage.css' %}">
+<div id="mypageBox">
+    <nav id="mypage_nav">
+        <a href="{% url 'playlist' %}">플레이리스트</a>
+        <a href="{% url 'liked_album' %}">좋아요한 앨범</a>
+        <a href="{% url 'liked_track' %}">좋아요한 트랙</a>
+        <a href="{% url 'pwd_check' %}">회원정보</a>
+    </nav>
+    <div id="liked_track_box">
+        <table id='album_songs'>
+            <tr>
+                <th id='album_song_no'>번호</th>
+                <th id="album_song_image">표지</th>
+                <th id='album_song_name'>앨범명</th>
+                <th id='album_song_preview'>가수</th>
+                <th id='album_song_thumbs'>좋아요</th>
+            </tr>
+            {% for album in liked_albums_info %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>
+                        <div class="lt_image">
+                            <img src='{{album.album_image}}'></td>
+                        </div>
+                    <td>{{album.album_name}}</td>
+                    <td>{{album.album_artist}}</td>
+                    <td>
+                        <div class="like-button">
+                            <img id="heart-icon" onclick="likeAlbum(this, '{{ album.album_id }}')" data-album-id="{{ album.album_id }}" src="{% static '/image/heart_icon1.png' %}" alt="Liked">
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+<script>
+        // 페이지가 로드될 때 실행될 함수
+    
+    // 'liketrack' 변수는 Python에서 전달된 변수로 JavaScript에서 사용 가능
+    var likealbum = {{ likealbum|safe }};
+
+    // 페이지가 로드될 때 실행될 함수
+    window.addEventListener('load', function() {
+        var heartIcons = document.querySelectorAll("#heart-icon");
+        
+        heartIcons.forEach(function(heartIcon) {
+           
+        var albumId = heartIcon.getAttribute("data-album-id");
+
+        if (likealbum.includes(albumId)) {
+            heartIcon.src = "{% static '/image/heart_icon2.png' %}";
+        } else {
+            heartIcon.src = "{% static '/image/heart_icon1.png' %}";
+        }
+
+        });  
+    });
+
+    
+    function likeAlbum(heartIcon, albumId) {
+        var currentImageSrc = heartIcon.src;
+        var currentImageFileName = currentImageSrc.substr(currentImageSrc.lastIndexOf('/') + 1);
+        
+        if (currentImageFileName === 'heart_icon1.png') {
+            heartIcon.src = '{% static "/image/heart_icon2.png" %}';
+            like_Album(albumId, true);
+        } else {
+            heartIcon.src = '{% static "/image/heart_icon1.png" %}';
+            like_Album(albumId, false);
+        }
+        
+        event.preventDefault();
+        event.stopPropagation();
+    }
+    
+
+    function like_Album(albumId, isLiked) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", '/like_album/', true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+        
+        xhr.onreadystatechange = function() {
+            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                console.log(this.responseText);
+            }
+        }
+        
+        if ({{ request.user.is_authenticated|lower }}) {
+            xhr.send("id={{ request.user.id|default:'null' }}&album_id=" + albumId);
+        } else {
+            alert('로그인이 필요합니다.');
+        }
+    }
+</script>
+
+{% endblock content %}
